@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from database import db
 from sqlalchemy import text
 import random
+import math
 
 dashboard = Blueprint("dashboard", __name__)
 
@@ -13,6 +14,12 @@ dashboard = Blueprint("dashboard", __name__)
 @dashboard.route("/dashboard")
 @login_required
 def dashboard_page():
+
+    # =========================
+    # PAGINAÇÃO
+    # =========================
+    page = request.args.get("page", 1, type=int)
+    per_page = 12
 
     # =========================
     # CLIENTES
@@ -41,6 +48,12 @@ def dashboard_page():
     except Exception as e:
         print("ERRO CLIENTES:", e)
         clientes = []
+
+    # =========================
+    # TOTAL PÁGINAS + SLICE
+    # =========================
+    total_pages = math.ceil(len(clientes) / per_page) if clientes else 1
+    clientes = clientes[(page - 1) * per_page : page * per_page]
 
     # =========================
     # PEDIDOS
@@ -75,7 +88,7 @@ def dashboard_page():
     # =========================
     # MÉTRICAS
     # =========================
-    total_usuarios = len(clientes)
+    total_usuarios = len(clientes) * total_pages if total_pages > 0 else len(clientes)
     total_pedidos = len(ultimos_pedidos)
     total_logs = 120
 
@@ -84,17 +97,15 @@ def dashboard_page():
     risco_baixo = len([c for c in clientes if c.get("score", 0) < 40])
 
     media_risco = (
-        sum(c.get("score", 0) for c in clientes) / total_usuarios
-        if total_usuarios > 0 else 0
+        sum(c.get("score", 0) for c in clientes) / len(clientes)
+        if clientes else 0
     )
 
-    print(f"[DASHBOARD] clientes={total_usuarios} pedidos={total_pedidos}")
-
-    # DEBUG (IMPORTANTE PRA VOCÊ VER SE ESTÁ VINDO DADO)
+    print(f"[DASHBOARD] clientes={len(clientes)} pedidos={total_pedidos}")
     print("CLIENTES EXEMPLO:", clientes[:2])
 
     # =========================
-    # RENDER
+    # RENDER TEMPLATE
     # =========================
     return render_template(
         "dashboard.html",
@@ -109,5 +120,8 @@ def dashboard_page():
         media_risco=round(media_risco, 2),
         risco_alto=risco_alto,
         risco_medio=risco_medio,
-        risco_baixo=risco_baixo
+        risco_baixo=risco_baixo,
+
+        page=page,
+        total_pages=total_pages
     )
