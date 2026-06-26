@@ -45,10 +45,10 @@ class Config:
     # =========================
     # SESSÃO (FALHA MAIS COMUM NO LOGIN LOOP)
     # =========================
-    SESSION_COOKIE_SECURE = False  # 🔥 IMPORTANTE PRA TESTE
-    SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = "Lax"
-    SESSION_REFRESH_EACH_REQUEST = False
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_DOMAIN = None
+SESSION_REFRESH_EACH_REQUEST = False
 
     # =========================
     # APP INFO
