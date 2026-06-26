@@ -2,17 +2,22 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required
 from sqlalchemy import func
 
-from database import db
 from models import Usuario
 
 auth = Blueprint("auth", __name__)
 
 
+# =========================
+# REDIRECIONAMENTO INICIAL
+# =========================
 @auth.route("/")
 def home():
     return redirect(url_for("auth.login"))
 
 
+# =========================
+# LOGIN
+# =========================
 @auth.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -25,10 +30,12 @@ def login():
             flash("Preencha todos os campos.", "danger")
             return render_template("login.html")
 
+        # busca usuário (case-insensitive)
         usuario = Usuario.query.filter(
             func.lower(Usuario.email) == email.lower()
         ).first()
 
+        # valida senha (hash)
         if usuario and usuario.check_password(senha):
 
             login_user(usuario)
@@ -40,6 +47,9 @@ def login():
     return render_template("login.html")
 
 
+# =========================
+# LOGOUT
+# =========================
 @auth.route("/logout")
 @login_required
 def logout():
