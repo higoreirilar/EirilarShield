@@ -30,6 +30,13 @@ def create_app():
 
     app = Flask(__name__)
     app.config.from_object(Config)
+    app.secret_key = app.config["SECRET_KEY"]
+
+app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+
+app.config["SESSION_PROTECTION"] = "strong"
 
     # 🔥 NECESSÁRIO NO RAILWAY (proxy HTTPS)
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
