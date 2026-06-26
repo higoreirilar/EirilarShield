@@ -10,109 +10,166 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+/* =======================
+   BASE
+======================= */
 body{
 margin:0;
-background:#0f1115;
-font-family:Arial;
-color:#fff;
+background:#0b0f14;
+font-family:Arial, sans-serif;
+color:#e8eef6;
+font-size:14px;
 }
 
-/* SIDEBAR */
+/* =======================
+   SIDEBAR
+======================= */
 .sidebar{
 position:fixed;
-left:0;top:0;
-width:240px;
+left:0;
+top:0;
+width:250px;
 height:100vh;
-background:#d90429;
+background:linear-gradient(180deg,#d90429,#8f001a);
+padding:22px;
 display:flex;
 flex-direction:column;
-padding:20px;
 }
 
 .logo{
-width:160px;
-margin-bottom:25px;
+width:170px;
+margin-bottom:30px;
 }
 
 .sidebar a{
 color:#fff;
 text-decoration:none;
-padding:12px;
+padding:12px 14px;
 border-radius:10px;
 display:flex;
 gap:10px;
 align-items:center;
 margin-bottom:6px;
+font-size:14px;
 transition:.2s;
 }
 
 .sidebar a:hover{
-background:rgba(255,255,255,0.15);
+background:rgba(255,255,255,0.12);
 }
 
 .active{
 background:rgba(0,0,0,0.25);
 }
 
-/* CONTENT */
+/* =======================
+   CONTENT
+======================= */
 .content{
-margin-left:240px;
-padding:20px;
+margin-left:250px;
+padding:24px;
 }
 
-/* TOPBAR */
+/* =======================
+   TOPBAR
+======================= */
 .topbar{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:20px;
+margin-bottom:25px;
 }
 
-/* CARDS */
+.topbar h3{
+font-size:22px;
+font-weight:800;
+margin:0;
+}
+
+.topbar small{
+opacity:0.7;
+}
+
+/* =======================
+   CARDS KPI
+======================= */
 .cards{
 display:grid;
 grid-template-columns:repeat(4,1fr);
-gap:15px;
+gap:18px;
 }
 
 .cardx{
-background:#161a22;
-border-radius:14px;
-padding:18px;
-box-shadow:0 10px 25px rgba(0,0,0,0.3);
+background:#121821;
+border-radius:16px;
+padding:22px;
+box-shadow:0 10px 25px rgba(0,0,0,0.35);
+border:1px solid rgba(255,255,255,0.04);
 }
 
-/* GRID */
+.cardx h4{
+font-size:28px;
+font-weight:800;
+margin:0;
+}
+
+.cardx small{
+opacity:0.7;
+}
+
+/* =======================
+   GRID
+======================= */
 .grid{
 display:grid;
-grid-template-columns:1.2fr 1fr;
-gap:15px;
-margin-top:20px;
+grid-template-columns:1.3fr 1fr;
+gap:18px;
+margin-top:22px;
 }
 
-/* LIST */
+/* =======================
+   CARD BASE
+======================= */
+.box{
+background:#121821;
+border-radius:16px;
+padding:18px;
+border:1px solid rgba(255,255,255,0.04);
+}
+
+/* =======================
+   CLIENT LIST
+======================= */
 .client{
 display:flex;
 justify-content:space-between;
-padding:10px 0;
-border-bottom:1px solid #2a2f3a;
+align-items:center;
+padding:14px 10px;
+border-bottom:1px solid rgba(255,255,255,0.06);
 font-size:14px;
 }
 
-/* TABLE CARD */
-.table-card{
-background:#161a22;
-margin-top:20px;
-padding:15px;
-border-radius:14px;
+.client b{
+font-size:14px;
 }
 
-/* BADGES */
-.badge{
+.client small{
+opacity:0.7;
 font-size:12px;
 }
 
-/* RESPONSIVO */
+/* =======================
+   BADGES
+======================= */
+.badge{
+padding:6px 10px;
+border-radius:8px;
+font-size:11px;
+}
+
+/* =======================
+   RESPONSIVO
+======================= */
 @media(max-width:900px){
 .sidebar{display:none;}
 .content{margin:0;}
@@ -145,14 +202,14 @@ font-size:12px;
 <!-- TOP -->
 <div class="topbar">
 <div>
-<h3 style="margin:0">Dashboard</h3>
+<h3>Dashboard</h3>
 <small>Bem-vindo, {{ user.nome }}</small>
 </div>
 
-<input class="form-control" style="width:250px" placeholder="Pesquisar...">
+<input class="form-control" style="width:260px;background:#0f141c;border:1px solid #1f2a3a;color:#fff">
 </div>
 
-<!-- CARDS -->
+<!-- KPI -->
 <div class="cards">
 
 <div class="cardx">
@@ -180,13 +237,13 @@ font-size:12px;
 <!-- GRID -->
 <div class="grid">
 
-<div class="cardx">
-<h5>Distribuição de Risco</h5>
+<div class="box">
+<h5 style="margin-bottom:15px;">Distribuição de Risco</h5>
 <canvas id="chart"></canvas>
 </div>
 
-<div class="cardx">
-<h5>Resumo do Sistema</h5>
+<div class="box">
+<h5 style="margin-bottom:15px;">Resumo do Sistema</h5>
 
 <div class="client">
 <span>IPs únicos</span>
@@ -205,7 +262,7 @@ font-size:12px;
 
 <div class="client">
 <span>Alto risco</span>
-<b style="color:#ff4d4d">{{ risco_alto }}</b>
+<b style="color:#ff3b3b">{{ risco_alto }}</b>
 </div>
 
 </div>
@@ -213,8 +270,8 @@ font-size:12px;
 </div>
 
 <!-- CLIENTES -->
-<div class="table-card">
-<h5>Clientes recentes</h5>
+<div class="box" style="margin-top:22px;">
+<h5 style="margin-bottom:15px;">Clientes Recentes</h5>
 
 {% for c in clientes %}
 <div class="client">
@@ -242,8 +299,8 @@ font-size:12px;
 </div>
 
 <!-- PEDIDOS -->
-<div class="table-card">
-<h5>Últimos pedidos</h5>
+<div class="box" style="margin-top:22px;">
+<h5 style="margin-bottom:15px;">Últimos Pedidos</h5>
 
 {% for p in ultimos_pedidos %}
 <div class="client">
@@ -264,7 +321,7 @@ data:{
 labels:['Alto','Médio','Baixo'],
 datasets:[{
 data:[{{ risco_alto }},{{ risco_medio }},{{ risco_baixo }}],
-backgroundColor:['#d90429','#fbbf24','#22c55e']
+backgroundColor:['#ff2d2d','#f5c542','#2dd46f']
 }]
 },
 options:{
