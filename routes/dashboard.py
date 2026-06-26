@@ -12,7 +12,7 @@ dashboard = Blueprint("dashboard", __name__)
 def dashboard_page():
 
     # =========================
-    # PAGINAÇÃO CLIENTES
+    # PAGINAÇÃO
     # =========================
     page = request.args.get("page", 1, type=int)
     per_page = 12
@@ -29,7 +29,7 @@ def dashboard_page():
         total_usuarios = 0
 
     # =========================
-    # CLIENTES (🔥 AGORA COM ID)
+    # CLIENTES (COM ID CORRIGIDO)
     # =========================
     try:
         result = db.session.execute(text("""
@@ -102,12 +102,12 @@ def dashboard_page():
         total_pedidos = 0
 
     # =========================
-    # LOGS
+    # LOGS (placeholder)
     # =========================
     total_logs = 120
 
     # =========================
-    # RISCO
+    # RISCO GLOBAL
     # =========================
     try:
         media_risco = db.session.execute(text("""
@@ -135,27 +135,31 @@ def dashboard_page():
     # =========================
     # DEBUG
     # =========================
-    print(f"[DASHBOARD] clientes={len(clientes)}")
+    print(f"[DASHBOARD] usuarios={total_usuarios} clientes={len(clientes)}")
 
     # =========================
-    # TEMPLATE
+    # RENDER
     # =========================
     return render_template(
         "dashboard.html",
 
+        # dados
         clientes=clientes,
         ultimos_pedidos=ultimos_pedidos,
         user=current_user,
 
+        # KPIs
         total_usuarios=total_usuarios,
         total_pedidos=total_pedidos,
         total_logs=total_logs,
         media_risco=round(media_risco, 2),
 
+        # risco
         risco_alto=risco_alto,
         risco_medio=risco_medio,
         risco_baixo=risco_baixo,
 
+        # paginação
         page=page,
         total_pages=total_pages
     )
