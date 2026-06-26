@@ -18,7 +18,7 @@ from routes.bloqueios import bloqueios
 from routes.risco import risco
 
 # 🔥 AÇÕES DOS CLIENTES (CORRIGIDO)
-from routes.acoes_clientes import acoes
+from routes.acoes_clientes import acoes_clientes
 
 
 # =========================
@@ -73,7 +73,7 @@ def create_app():
     app.register_blueprint(risco)
 
     # 🔥 AÇÕES (CLIENTES)
-    app.register_blueprint(acoes)
+    app.register_blueprint(acoes_clientes)
 
     # =========================
     # HOME -> DASHBOARD
