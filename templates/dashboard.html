@@ -62,7 +62,6 @@ align-items:center;
 margin-bottom:25px;
 }
 
-/* KPI */
 .cards{
 display:grid;
 grid-template-columns:repeat(4,1fr);
@@ -91,7 +90,7 @@ border-radius:12px;
 .purple{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
 .green{background:linear-gradient(135deg,#16a34a,#4ade80);}
 
-/* CLIENTES */
+/* CLIENTE */
 .client-card{
 background:#fff;
 border-radius:16px;
@@ -150,7 +149,7 @@ font-size:12px;
 <input class="form-control" style="width:300px" placeholder="Pesquisar...">
 </div>
 
-<!-- KPI -->
+<!-- KPIs -->
 <div class="cards">
 
 <div class="kpi blue">
@@ -253,7 +252,7 @@ font-size:12px;
 </div>
 </div>
 
-<!-- MODAL DETALHES -->
+<!-- MODAL -->
 <div class="modal fade" id="modalCliente">
 <div class="modal-dialog">
 <div class="modal-content">
@@ -274,39 +273,34 @@ font-size:12px;
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-function acao(tipo,id){
-fetch(`/cliente/${tipo}/${id}`,{method:"POST"})
-.then(r=>r.json())
-.then(res=>{
-alert("Status: " + res.status)
-location.reload()
-})
+async function acao(tipo,id){
+    const r = await fetch(`/cliente/${tipo}/${id}`, {method:"POST"});
+    const res = await r.json();
+    alert("Status: " + res.status);
+    location.reload();
 }
 
-function detalhes(id){
-fetch(`/cliente/detalhes/${id}`)
-.then(r=>r.json())
-.then(c=>{
-document.getElementById("modalBody").innerHTML=`
-<b>Nome:</b> ${c.nome}<br>
-<b>CPF:</b> ${c.cpf}<br>
-<b>Telefone:</b> ${c.telefone}<br>
-<b>IP:</b> ${c.ip}<br>
-<b>Cidade:</b> ${c.cidade} - ${c.estado}<br>
-<b>Score:</b> ${c.score}<br>
-<b>Pagamento:</b> ${c.forma_pagamento}
-`;
+async function detalhes(id){
+    const r = await fetch(`/cliente/detalhes/${id}`);
+    const c = await r.json();
 
-new bootstrap.Modal(document.getElementById("modalCliente")).show();
-})
+    document.getElementById("modalBody").innerHTML = `
+        <b>Nome:</b> ${c.nome}<br>
+        <b>CPF:</b> ${c.cpf}<br>
+        <b>Telefone:</b> ${c.telefone}<br>
+        <b>IP:</b> ${c.ip}<br>
+        <b>Cidade:</b> ${c.cidade} - ${c.estado}<br>
+        <b>Score:</b> ${c.score}<br>
+        <b>Pagamento:</b> ${c.forma_pagamento}
+    `;
+
+    new bootstrap.Modal(document.getElementById("modalCliente")).show();
 }
 
-function ligar(id){
-fetch(`/cliente/ligar/${id}`,{method:"POST"})
-.then(r=>r.json())
-.then(res=>{
-alert("Ligando para: " + res.telefone)
-})
+async function ligar(id){
+    const r = await fetch(`/cliente/ligar/${id}`, {method:"POST"});
+    const res = await r.json();
+    alert("Ligando para: " + res.telefone);
 }
 </script>
 
