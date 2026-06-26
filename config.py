@@ -4,9 +4,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# =========================
-# FUNÇÃO SEGURA PARA DB URL
-# =========================
 def get_database_url():
     url = os.getenv("DATABASE_URL")
 
@@ -16,33 +13,41 @@ def get_database_url():
     return url
 
 
-# =========================
-# CONFIG
-# =========================
 class Config:
 
-    # Segurança
+    # =========================
+    # SEGURANÇA
+    # =========================
     SECRET_KEY = os.getenv(
         "SECRET_KEY",
         "eirilar_shield_super_secret_key_2026"
     )
 
-    # Banco de dados (corrigido)
+    # =========================
+    # SESSÃO (ESSENCIAL NO RAILWAY)
+    # =========================
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+
+    # =========================
+    # BANCO
+    # =========================
     SQLALCHEMY_DATABASE_URI = get_database_url()
 
-    # Evita crash silencioso no Railway
     if not SQLALCHEMY_DATABASE_URI:
         raise RuntimeError("DATABASE_URL não foi definida no ambiente")
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # Performance Railway / Postgres
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
         "pool_recycle": 300
     }
 
-    # App metadata
+    # =========================
+    # APP INFO
+    # =========================
     APP_NAME = "EIRILAR SHIELD"
     VERSION = "2.0"
     ITEMS_PER_PAGE = 20
