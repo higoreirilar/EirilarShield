@@ -208,6 +208,54 @@ class BlockedIP(db.Model):
     created_at = db.Column(
         db.DateTime,
         default=datetime.utcnow
+
+        # ==========================================
+# BLOCKED EMAILS
+# ==========================================
+class BlockedEmail(db.Model):
+    __tablename__ = "blocked_emails"
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    reason = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# ==========================================
+# BLOCKED CPFS
+# ==========================================
+class BlockedCPF(db.Model):
+    __tablename__ = "blocked_cpfs"
+
+    id = db.Column(db.Integer, primary_key=True)
+    cpf = db.Column(db.String(20), unique=True, nullable=False)
+    reason = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# ==========================================
+# BLOCKED DEVICES
+# ==========================================
+class BlockedDevice(db.Model):
+    __tablename__ = "blocked_devices"
+
+    id = db.Column(db.Integer, primary_key=True)
+    device_id = db.Column(db.String(255), unique=True, nullable=False)
+    reason = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+# ==========================================
+# TRUSTED IPS
+# ==========================================
+class TrustedIP(db.Model):
+    __tablename__ = "trusted_ips"
+
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(50), unique=True, nullable=False)
+    observation = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
     )
 
     def __repr__(self):
