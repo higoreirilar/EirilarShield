@@ -10,6 +10,7 @@ load_dotenv()
 def get_database_url():
     url = os.getenv("DATABASE_URL")
 
+    # Railway ainda usa postgres:// às vezes
     if url and url.startswith("postgres://"):
         url = url.replace("postgres://", "postgresql://", 1)
 
@@ -21,14 +22,16 @@ def get_database_url():
 # =========================
 class Config:
 
-    # 🔐 SECRET KEY
+    # =========================
+    # SEGURANÇA
+    # =========================
     SECRET_KEY = os.getenv(
         "SECRET_KEY",
-        "eirilar_shield_super_secret_key_2026"
+        "eirilar_shield_super_secret_key_2026_change_me"
     )
 
     # =========================
-    # DATABASE
+    # BANCO DE DADOS
     # =========================
     SQLALCHEMY_DATABASE_URI = get_database_url()
 
@@ -43,13 +46,11 @@ class Config:
     }
 
     # =========================
-    # 🔥 SESSÃO (CRÍTICO PARA PARAR F5 LOOP)
+    # SESSÃO (LOGIN FIX RAILWAY)
     # =========================
-
-    SESSION_COOKIE_SECURE = False  # 🔥 MUITO IMPORTANTE NO RAILWAY
+    SESSION_COOKIE_SECURE = False  # Railway usa HTTP interno
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
-    SESSION_COOKIE_DOMAIN = None
     SESSION_REFRESH_EACH_REQUEST = False
 
     # =========================
@@ -57,4 +58,8 @@ class Config:
     # =========================
     APP_NAME = "EIRILAR SHIELD"
     VERSION = "2.0"
+
+    # =========================
+    # PAGINAÇÃO
+    # =========================
     ITEMS_PER_PAGE = 20
