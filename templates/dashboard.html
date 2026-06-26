@@ -26,13 +26,25 @@ display:flex;flex-direction:column
 .content{margin-left:280px;padding:30px}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}
 
-/* CARDS */
+/* CARDS KPIs */
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .cardx{background:#fff;border-radius:18px;padding:20px;box-shadow:0 10px 25px rgba(0,0,0,.08)}
 .cardx i{font-size:34px;color:#d90429}
 
 /* GRID */
 .grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-top:20px}
+
+/* CLIENT CARDS */
+.client-card{
+background:#fff;
+border-radius:16px;
+padding:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+transition:.2s;
+}
+.client-card:hover{
+transform:translateY(-3px);
+}
 
 .badge-risk{background:#d90429}
 .btn-main{background:#d90429;color:#fff}
@@ -73,10 +85,10 @@ display:flex;flex-direction:column
 <small>Bem-vindo, {{ user.nome }}</small>
 </div>
 
-<input class="form-control" style="width:300px" placeholder="Pesquisar usuário...">
+<input class="form-control" style="width:300px" placeholder="Pesquisar cliente...">
 </div>
 
-<!-- CARDS -->
+<!-- KPIs -->
 <div class="cards">
 <div class="cardx"><i class="bi bi-people-fill"></i><h3>{{ total_usuarios }}</h3><p>Usuários</p></div>
 <div class="cardx"><i class="bi bi-bag-fill"></i><h3>{{ total_pedidos }}</h3><p>Pedidos</p></div>
@@ -84,82 +96,79 @@ display:flex;flex-direction:column
 <div class="cardx"><i class="bi bi-shield-fill-check"></i><h3>{{ media_risco }}</h3><p>Score Médio</p></div>
 </div>
 
-<!-- GRID -->
+<!-- GRÁFICO -->
 <div class="grid">
-
-<!-- CHART -->
 <div class="cardx">
 <h5>Distribuição de Risco</h5>
 <canvas id="chart" height="180"></canvas>
 </div>
 
-<!-- RESUMO -->
 <div class="cardx">
 <h5>Resumo</h5>
 <p>🔴 Alto: {{ risco_alto }}</p>
 <p>🟡 Médio: {{ risco_medio }}</p>
 <p>🟢 Baixo: {{ risco_baixo }}</p>
 </div>
-
 </div>
 
-<!-- CLIENTES -->
+<!-- CLIENTES EM CARDS -->
 <div class="cardx mt-4">
 <div class="d-flex justify-content-between mb-3">
 <h5>Clientes</h5>
 <button class="btn btn-main">Exportar</button>
 </div>
 
-<table class="table table-hover align-middle">
-<thead>
-<tr>
-<th>Nome</th>
-<th>CPF</th>
-<th>IP</th>
-<th>Cidade</th>
-<th>Estado</th>
-<th>Score</th>
-<th>Ações</th>
-</tr>
-</thead>
+<div class="row g-3">
 
-<tbody>
 {% for c in clientes %}
-<tr>
-<td>{{ c.nome }}</td>
-<td>{{ c.cpf }}</td>
-<td>{{ c.ip }}</td>
-<td>{{ c.cidade }}</td>
-<td>{{ c.estado }}</td>
 
-<td>
+<div class="col-12 col-md-6 col-lg-4">
+
+<div class="client-card">
+
+<!-- HEADER -->
+<div class="d-flex justify-content-between align-items-center mb-2">
+<strong>{{ c.nome }}</strong>
+
 {% if c.score >= 70 %}
-<span class="badge badge-risk">Alto</span>
+<span class="badge bg-danger">Alto</span>
 {% elif c.score >= 40 %}
-<span class="badge bg-warning">Médio</span>
+<span class="badge bg-warning text-dark">Médio</span>
 {% else %}
 <span class="badge bg-success">Baixo</span>
 {% endif %}
-</td>
 
-<td>
-<button class="btn btn-danger btn-sm">Bloquear</button>
-<button class="btn btn-outline-danger btn-sm">Ver</button>
-</td>
-</tr>
+</div>
+
+<!-- INFO -->
+<div style="font-size:13px; color:#444">
+<div><b>CPF:</b> {{ c.cpf }}</div>
+<div><b>IP:</b> {{ c.ip }}</div>
+<div><b>Cidade:</b> {{ c.cidade }} - {{ c.estado }}</div>
+<div><b>Pagamento:</b> {{ c.forma_pagamento }}</div>
+</div>
+
+<!-- BOTÕES -->
+<div class="d-flex gap-2 mt-3">
+<button class="btn btn-danger btn-sm w-100">Bloquear</button>
+<button class="btn btn-success btn-sm w-100">Desbloquear</button>
+<button class="btn btn-outline-dark btn-sm w-100">Ver</button>
+</div>
+
+</div>
+
+</div>
+
 {% endfor %}
-</tbody>
-</table>
+
+</div>
 </div>
 
 <!-- PEDIDOS -->
 <div class="cardx mt-4">
-<div class="d-flex justify-content-between mb-3">
 <h5>Últimos Pedidos</h5>
-<button class="btn btn-main">Exportar</button>
-</div>
 
-<table class="table table-hover align-middle">
+<table class="table table-hover mt-3">
 <thead>
 <tr>
 <th>ID</th>
@@ -177,8 +186,7 @@ display:flex;flex-direction:column
 <td>R$ {{ p.valor }}</td>
 <td>
 <button class="btn btn-danger btn-sm">Bloquear</button>
-<button class="btn btn-success btn-sm">Desbloquear</button>
-<button class="btn btn-outline-danger btn-sm">Ver detalhes</button>
+<button class="btn btn-outline-danger btn-sm">Ver</button>
 </td>
 </tr>
 {% endfor %}
@@ -188,7 +196,7 @@ display:flex;flex-direction:column
 
 </div>
 
-<!-- CHART JS -->
+<!-- CHART -->
 <script>
 new Chart(document.getElementById('chart'),{
 type:'doughnut',
@@ -199,9 +207,7 @@ data:[{{ risco_alto }},{{ risco_medio }},{{ risco_baixo }}],
 backgroundColor:['#d90429','#f4b400','#22c55e']
 }]
 },
-options:{
-plugins:{legend:{position:'bottom'}}
-}
+options:{plugins:{legend:{position:'bottom'}}}
 });
 </script>
 
