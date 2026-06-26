@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Eirilar Shield - Dashboard</title>
+<title>Eirilar Shield Dashboard</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body{
@@ -78,63 +77,19 @@ border-radius:18px;
 padding:20px;
 color:#fff;
 box-shadow:0 8px 20px rgba(0,0,0,.08);
-transition:.2s;
 }
 
-.kpi:hover{transform:translateY(-3px);}
-
 .kpi i{
-font-size:28px;
+font-size:26px;
 background:rgba(255,255,255,.2);
 padding:10px;
 border-radius:12px;
 }
 
-.kpi h3{
-margin:0;
-font-size:24px;
-font-weight:bold;
-}
-
-.kpi p{
-margin:0;
-font-size:13px;
-opacity:.9;
-}
-
-/* cores */
 .blue{background:linear-gradient(135deg,#2563eb,#60a5fa);}
 .orange{background:linear-gradient(135deg,#f97316,#fb923c);}
 .purple{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
 .green{background:linear-gradient(135deg,#16a34a,#4ade80);}
-
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:1.2fr 1.8fr;
-gap:20px;
-margin-top:20px;
-}
-
-.cardx{
-background:#fff;
-border-radius:18px;
-padding:20px;
-box-shadow:0 8px 20px rgba(0,0,0,.06);
-}
-
-/* ALERTA */
-.alert-risk{
-border-left:6px solid #d90429;
-background:#fff;
-padding:15px;
-border-radius:12px;
-margin-bottom:10px;
-}
-
-.badge-alto{background:#dc3545;}
-.badge-medio{background:#f59e0b;}
-.badge-baixo{background:#22c55e;}
 
 /* CLIENTES */
 .client-card{
@@ -149,11 +104,36 @@ transition:.2s;
 transform:translateY(-3px);
 }
 
-/* RESPONSIVO */
-@media(max-width:900px){
-.sidebar{position:relative;width:100%;height:auto}
-.content{margin:0}
-.cards,.grid{grid-template-columns:1fr}
+/* BOTÕES */
+.btn-action{
+font-size:12px;
+padding:6px 8px;
+border-radius:8px;
+border:none;
+color:#fff;
+cursor:pointer;
+}
+
+/* CORES DOS BOTÕES */
+.block{background:#dc3545;}       /* vermelho */
+.unblock{background:#22c55e;}     /* verde */
+.analyze{background:#f59e0b;}     /* dourado */
+.view{background:#2563eb;}        /* azul */
+.call{background:#7c3aed;}        /* roxo */
+
+.btn-group-actions{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:5px;
+margin-top:10px;
+}
+
+/* PAINEL */
+.cardx{
+background:#fff;
+border-radius:18px;
+padding:20px;
+box-shadow:0 8px 20px rgba(0,0,0,.06);
 }
 </style>
 </head>
@@ -225,36 +205,7 @@ transform:translateY(-3px);
 
 </div>
 
-<!-- GRID -->
-<div class="grid">
-
-<!-- ALERTAS -->
-<div class="cardx">
-<h5><i class="bi bi-exclamation-triangle"></i> Alertas de Risco</h5>
-
-{% for c in clientes %}
-{% if c.score >= 70 %}
-
-<div class="alert-risk">
-<strong>{{ c.nome }}</strong><br>
-<small>{{ c.ip }} • {{ c.cidade }}</small>
-<span class="badge badge-alto float-end">ALTO</span>
-</div>
-
-{% endif %}
-{% endfor %}
-
-</div>
-
-<!-- GRÁFICO -->
-<div class="cardx">
-<h5>Distribuição de Risco</h5>
-<canvas id="chart"></canvas>
-</div>
-
-</div>
-
-<!-- CLIENTES -->
+<!-- PAINEL -->
 <div class="cardx mt-4">
 <h5>Clientes</h5>
 
@@ -283,8 +234,33 @@ transform:translateY(-3px);
 <div style="font-size:13px">
 <div><b>CPF:</b> {{ c.cpf }}</div>
 <div><b>IP:</b> {{ c.ip }}</div>
-<div><b>Cidade:</b> {{ c.cidade }}</div>
+<div><b>Cidade:</b> {{ c.cidade }} - {{ c.estado }}</div>
 <div><b>Pagamento:</b> {{ c.forma_pagamento }}</div>
+</div>
+
+<!-- BOTÕES DE AÇÃO -->
+<div class="btn-group-actions">
+
+<button class="btn-action block">
+<i class="bi bi-x-circle"></i>
+</button>
+
+<button class="btn-action unblock">
+<i class="bi bi-check-circle"></i>
+</button>
+
+<button class="btn-action analyze">
+<i class="bi bi-search"></i>
+</button>
+
+<button class="btn-action view">
+<i class="bi bi-eye"></i>
+</button>
+
+<button class="btn-action call">
+<i class="bi bi-telephone"></i>
+</button>
+
 </div>
 
 </div>
@@ -295,24 +271,44 @@ transform:translateY(-3px);
 </div>
 </div>
 
+<!-- PEDIDOS -->
+<div class="cardx mt-4">
+<h5>Últimos Pedidos</h5>
+
+<div class="table-responsive mt-3">
+
+<table class="table table-hover">
+
+<thead>
+<tr>
+<th>ID</th>
+<th>Cliente</th>
+<th>Status</th>
+<th>Valor</th>
+<th>IP</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for p in ultimos_pedidos %}
+<tr>
+<td>#{{ p.id }}</td>
+<td>{{ p.nome_cliente }}</td>
+<td>{{ p.status }}</td>
+<td>R$ {{ p.valor }}</td>
+<td><code>{{ p.ip }}</code></td>
+</tr>
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
 </div>
 
-<!-- CHART -->
-<script>
-new Chart(document.getElementById('chart'),{
-type:'doughnut',
-data:{
-labels:['Alto','Médio','Baixo'],
-datasets:[{
-data:[{{ risco_alto }},{{ risco_medio }},{{ risco_baixo }}],
-backgroundColor:['#dc3545','#f59e0b','#22c55e']
-}]
-},
-options:{
-plugins:{legend:{position:'bottom'}}
-}
-});
-</script>
+</div>
 
 </body>
 </html>
