@@ -22,7 +22,8 @@ login_manager.login_view = "auth.login"
 
 @login_manager.user_loader
 def load_user(user_id):
-    return db.session.get(Usuario, int(user_id))
+    from models import Usuario
+    return Usuario.query.filter_by(id=int(user_id)).first()
 
 
 def create_app():
