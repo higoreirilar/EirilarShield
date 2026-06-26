@@ -6,7 +6,9 @@ from config import Config
 from database import init_db
 from models import Usuario
 
-# Blueprints
+# =========================
+# BLUEPRINTS
+# =========================
 from routes.auth import auth
 from routes.dashboard import dashboard
 from routes.usuarios import usuarios
@@ -15,8 +17,8 @@ from routes.logs import logs
 from routes.bloqueios import bloqueios
 from routes.risco import risco
 
-# 🔥 IMPORTANTE: blueprint das ações dos botões
-from routes.acoes import acoes  # <- ESSENCIAL
+# 🔥 AÇÕES DOS CLIENTES (CORRIGIDO)
+from routes.acoes_clientes import acoes
 
 
 # =========================
@@ -70,7 +72,7 @@ def create_app():
     app.register_blueprint(bloqueios)
     app.register_blueprint(risco)
 
-    # 🔥 AÇÕES DOS BOTÕES (ESSENCIAL)
+    # 🔥 AÇÕES (CLIENTES)
     app.register_blueprint(acoes)
 
     # =========================
