@@ -1,92 +1,93 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
-
-from models import Usuario, Pedido, Log, RiskAnalysis, LoginSession
+from database import db
 
 dashboard = Blueprint("dashboard", __name__)
 
 
+# =========================
+# DASHBOARD PRINCIPAL
+# =========================
 @dashboard.route("/dashboard")
 @login_required
-def home():
+def dashboard_page():
 
     # =========================
-    # FUNÇÃO SEGURA PARA COUNT
+    # CLIENTES
     # =========================
-    def safe_count(model):
-        try:
-            return model.query.count() or 0
-        except Exception as e:
-            print(f"COUNT ERROR {model}: {e}")
-            return 0
+    cur = db.engine.raw_connection().cursor()
 
-    def safe_query_list(model, limit=5):
-        try:
-            return model.query.order_by(model.id.desc()).limit(limit).all()
-        except Exception as e:
-            print(f"QUERY ERROR {model}: {e}")
-            return []
+    cur.execute("""
+        SELECT nome, cpf, ip, cidade, estado, score, forma_pagamento
+        FROM clientes
+        ORDER BY id DESC
+    """)
+    rows = cur.fetchall()
 
-    def safe_risk_counts():
-        try:
-            total = RiskAnalysis.query.count() or 0
-
-            alto = RiskAnalysis.query.filter_by(risk_level="alto").count() or 0
-            medio = RiskAnalysis.query.filter_by(risk_level="medio").count() or 0
-            baixo = RiskAnalysis.query.filter_by(risk_level="baixo").count() or 0
-
-            scores = [
-                r.score for r in RiskAnalysis.query.all()
-                if r.score is not None
-            ]
-
-            media = round(sum(scores) / len(scores), 2) if scores else 0
-
-            return total, alto, medio, baixo, media
-
-        except Exception as e:
-            print("RISK ERROR:", e)
-            return 0, 0, 0, 0, 0
+    clientes = [
+        {
+            "nome": r[0],
+            "cpf": r[1],
+            "ip": r[2],
+            "cidade": r[3],
+            "estado": r[4],
+            "score": r[5],
+            "forma_pagamento": r[6]
+        }
+        for r in rows
+    ]
 
     # =========================
-    # KPIs
+    # PEDIDOS (EXEMPLO)
     # =========================
-    total_usuarios = safe_count(Usuario)
-    total_pedidos = safe_count(Pedido)
-    total_logs = safe_count(Log)
-    total_sessoes = safe_count(LoginSession)
+    cur.execute("""
+        SELECT id, status, valor
+        FROM pedidos
+        ORDER BY id DESC
+        LIMIT 10
+    """)
+    rows_pedidos = cur.fetchall()
+
+    ultimos_pedidos = [
+        {
+            "id": r[0],
+            "status": r[1],
+            "valor": r[2]
+        }
+        for r in rows_pedidos
+    ]
 
     # =========================
-    # RISCO
+    # MÉTRICAS (EXEMPLO SIMPLES)
     # =========================
-    risco_total, risco_alto, risco_medio, risco_baixo, media_risco = safe_risk_counts()
+    total_usuarios = len(clientes)
+    total_pedidos = len(ultimos_pedidos)
+    total_logs = 120  # se ainda não tiver tabela de logs
+
+    risco_alto = len([c for c in clientes if c["score"] >= 70])
+    risco_medio = len([c for c in clientes if 40 <= c["score"] < 70])
+    risco_baixo = len([c for c in clientes if c["score"] < 40])
+
+    media_risco = (
+        sum([c["score"] for c in clientes]) / total_usuarios
+        if total_usuarios > 0 else 0
+    )
 
     # =========================
-    # LISTAS
-    # =========================
-    ultimos_pedidos = safe_query_list(Pedido)
-    ultimos_logs = safe_query_list(Log)
-    ultimas_sessoes = safe_query_list(LoginSession)
-
-    # =========================
-    # RENDER
+    # RENDER TEMPLATE
     # =========================
     return render_template(
         "dashboard.html",
+        clientes=clientes,
+        ultimos_pedidos=ultimos_pedidos,
         user=current_user,
 
         total_usuarios=total_usuarios,
         total_pedidos=total_pedidos,
         total_logs=total_logs,
-        total_sessoes=total_sessoes,
 
-        risco_total=risco_total,
+        media_risco=round(media_risco, 2),
         risco_alto=risco_alto,
         risco_medio=risco_medio,
-        risco_baixo=risco_baixo,
-        media_risco=media_risco,
-
-        ultimos_pedidos=ultimos_pedidos,
-        ultimos_logs=ultimos_logs,
-        ultimas_sessoes=ultimas_sessoes
+        risco_baixo=risco_baixo
     )
