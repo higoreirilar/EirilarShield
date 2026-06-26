@@ -21,14 +21,14 @@ def get_database_url():
 # =========================
 class Config:
 
-    # 🔐 SEGURANÇA
+    # 🔐 SECRET KEY
     SECRET_KEY = os.getenv(
         "SECRET_KEY",
         "eirilar_shield_super_secret_key_2026"
     )
 
     # =========================
-    # BANCO DE DADOS
+    # DATABASE
     # =========================
     SQLALCHEMY_DATABASE_URI = get_database_url()
 
@@ -43,12 +43,14 @@ class Config:
     }
 
     # =========================
-    # SESSÃO (FALHA MAIS COMUM NO LOGIN LOOP)
+    # 🔥 SESSÃO (CRÍTICO PARA PARAR F5 LOOP)
     # =========================
-SESSION_COOKIE_SECURE = False
-SESSION_COOKIE_SAMESITE = "Lax"
-SESSION_COOKIE_DOMAIN = None
-SESSION_REFRESH_EACH_REQUEST = False
+
+    SESSION_COOKIE_SECURE = False  # 🔥 MUITO IMPORTANTE NO RAILWAY
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_COOKIE_DOMAIN = None
+    SESSION_REFRESH_EACH_REQUEST = False
 
     # =========================
     # APP INFO
