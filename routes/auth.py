@@ -1,18 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user
-from sqlalchemy import func
+from werkzeug.security import check_password_hash
 
+from database import db
 from models import Usuario
 
 auth = Blueprint("auth", __name__)
-
-
-# =========================
-# REDIRECIONA ROOT
-# =========================
-@auth.route("/")
-def home():
-    return redirect(url_for("auth.login"))
 
 
 # =========================
@@ -21,35 +14,36 @@ def home():
 @auth.route("/login", methods=["GET", "POST"])
 def login():
 
-    # 🔥 se já estiver logado, vai pro dashboard
+    # se já estiver logado, vai direto pro dashboard
     if current_user.is_authenticated:
-        return redirect(url_for("dashboard.home"))
+        return redirect(url_for("dashboard.dashboard_page"))
 
     if request.method == "POST":
 
-        email = (request.form.get("email") or "").strip()
-        senha = request.form.get("senha") or ""
+        email = request.form.get("email")
+        senha = request.form.get("senha")
 
-        # validação básica
         if not email or not senha:
-            flash("Preencha todos os campos", "danger")
-            return render_template("login.html")
+            flash("Preencha todos os campos", "error")
+            return redirect(url_for("auth.login"))
 
-        # busca usuário (case insensitive)
-        usuario = Usuario.query.filter(
-            func.lower(Usuario.email) == email.lower()
-        ).first()
+        user = Usuario.query.filter_by(email=email).first()
 
-        # valida senha
-        if usuario and usuario.check_password(senha):
+        if not user:
+            flash("Usuário não encontrado", "error")
+            return redirect(url_for("auth.login"))
 
-            login_user(usuario, remember=True)
+        # verifica senha hash
+        if not check_password_hash(user.senha, senha):
+            flash("Senha incorreta", "error")
+            return redirect(url_for("auth.login"))
 
-            flash("Login realizado com sucesso", "success")
+        login_user(user)
 
-            return redirect(url_for("dashboard.home"))
+        flash("Login realizado com sucesso", "success")
 
-        flash("Email ou senha inválidos", "danger")
+        # 🔥 CORREÇÃO PRINCIPAL DO SEU ERRO
+        return redirect(url_for("dashboard.dashboard_page"))
 
     return render_template("login.html")
 
@@ -60,9 +54,6 @@ def login():
 @auth.route("/logout")
 @login_required
 def logout():
-
     logout_user()
-
     flash("Você saiu do sistema", "info")
-
     return redirect(url_for("auth.login"))
