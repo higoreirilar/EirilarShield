@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 from database import db
 from sqlalchemy import text
-import random
 import math
 
 dashboard = Blueprint("dashboard", __name__)
@@ -13,14 +12,14 @@ dashboard = Blueprint("dashboard", __name__)
 def dashboard_page():
 
     # =========================
-    # PAGINAÇÃO
+    # PAGINAÇÃO CLIENTES
     # =========================
     page = request.args.get("page", 1, type=int)
     per_page = 12
     offset = (page - 1) * per_page
 
     # =========================
-    # TOTAL DE CLIENTES (REAL)
+    # TOTAL USUÁRIOS
     # =========================
     try:
         total_usuarios = db.session.execute(
@@ -30,7 +29,7 @@ def dashboard_page():
         total_usuarios = 0
 
     # =========================
-    # CLIENTES (PAGINADO)
+    # CLIENTES PAGINADOS
     # =========================
     try:
         result = db.session.execute(text("""
@@ -58,18 +57,23 @@ def dashboard_page():
         clientes = []
 
     # =========================
-    # TOTAL DE PÁGINAS
+    # TOTAL PÁGINAS
     # =========================
     total_pages = math.ceil(total_usuarios / per_page) if total_usuarios else 1
 
     # =========================
-    # PEDIDOS (ÚLTIMOS 10)
+    # PEDIDOS (JOIN CORRETO)
     # =========================
     try:
         result = db.session.execute(text("""
-            SELECT id, status, valor, nome_cliente
-            FROM pedidos
-            ORDER BY id DESC
+            SELECT 
+                p.id,
+                p.status,
+                p.valor,
+                c.nome AS nome_cliente
+            FROM pedidos p
+            LEFT JOIN clientes c ON c.id = p.cliente_id
+            ORDER BY p.id DESC
             LIMIT 10
         """))
 
@@ -78,7 +82,7 @@ def dashboard_page():
                 "id": r[0],
                 "status": r[1] or "indefinido",
                 "valor": float(r[2] or 0),
-                "nome_cliente": r[3] or ""
+                "nome_cliente": r[3] or "Desconhecido"
             }
             for r in result.fetchall()
         ]
@@ -88,44 +92,69 @@ def dashboard_page():
         ultimos_pedidos = []
 
     # =========================
-    # RISCO (BASEADO NOS CLIENTES DA PÁGINA)
+    # TOTAL PEDIDOS REAL
     # =========================
-    scores = [c["score"] for c in clientes if c.get("score") is not None]
-
-    risco_alto = len([s for s in scores if s >= 70])
-    risco_medio = len([s for s in scores if 40 <= s < 70])
-    risco_baixo = len([s for s in scores if s < 40])
-
-    media_risco = round(sum(scores) / len(scores), 2) if scores else 0
+    try:
+        total_pedidos = db.session.execute(
+            text("SELECT COUNT(*) FROM pedidos")
+        ).scalar()
+    except:
+        total_pedidos = 0
 
     # =========================
-    # LOGS (MOCK OU FUTURO BANCO)
+    # LOGS (placeholder)
     # =========================
     total_logs = 120
 
     # =========================
-    # DEBUG
+    # RISCO GLOBAL (BANCO TODO)
     # =========================
-    print(f"[DASHBOARD] usuários={total_usuarios} clientes_page={len(clientes)}")
+    try:
+        media_risco = db.session.execute(text("""
+            SELECT COALESCE(AVG(score), 0) FROM clientes
+        """)).scalar()
+
+        risco_alto = db.session.execute(text("""
+            SELECT COUNT(*) FROM clientes WHERE score >= 70
+        """)).scalar()
+
+        risco_medio = db.session.execute(text("""
+            SELECT COUNT(*) FROM clientes WHERE score >= 40 AND score < 70
+        """)).scalar()
+
+        risco_baixo = db.session.execute(text("""
+            SELECT COUNT(*) FROM clientes WHERE score < 40
+        """)).scalar()
+
+    except:
+        media_risco = 0
+        risco_alto = 0
+        risco_medio = 0
+        risco_baixo = 0
 
     # =========================
-    # RENDER
+    # DEBUG
+    # =========================
+    print(f"[DASHBOARD] usuarios={total_usuarios} clientes_page={len(clientes)}")
+
+    # =========================
+    # RENDER TEMPLATE
     # =========================
     return render_template(
         "dashboard.html",
 
-        # dados principais
+        # dados
         clientes=clientes,
         ultimos_pedidos=ultimos_pedidos,
         user=current_user,
 
         # KPIs
         total_usuarios=total_usuarios,
-        total_pedidos=len(ultimos_pedidos),
+        total_pedidos=total_pedidos,
         total_logs=total_logs,
-        media_risco=media_risco,
+        media_risco=round(media_risco, 2),
 
-        # risco
+        # risco global
         risco_alto=risco_alto,
         risco_medio=risco_medio,
         risco_baixo=risco_baixo,
