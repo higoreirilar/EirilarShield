@@ -17,7 +17,7 @@ from routes.logs import logs
 from routes.bloqueios import bloqueios
 from routes.risco import risco
 
-# 🔥 AÇÕES DOS CLIENTES (CORRIGIDO)
+# 🔥 AÇÕES DOS CLIENTES (ESSENCIAL PARA OS BOTÕES)
 from routes.acoes_clientes import acoes_clientes
 
 
@@ -46,7 +46,9 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Proxy fix (deploy)
+    # =========================
+    # PROXY FIX (DEPLOY)
+    # =========================
     app.wsgi_app = ProxyFix(
         app.wsgi_app,
         x_for=1,
@@ -55,14 +57,18 @@ def create_app():
         x_port=1
     )
 
-    # DB
+    # =========================
+    # DATABASE INIT
+    # =========================
     init_db(app)
 
-    # LOGIN
+    # =========================
+    # LOGIN INIT
+    # =========================
     login_manager.init_app(app)
 
     # =========================
-    # BLUEPRINTS
+    # BLUEPRINTS REGISTRATION
     # =========================
     app.register_blueprint(auth)
     app.register_blueprint(dashboard)
@@ -72,18 +78,18 @@ def create_app():
     app.register_blueprint(bloqueios)
     app.register_blueprint(risco)
 
-    # 🔥 AÇÕES (CLIENTES)
+    # 🔥 AÇÕES DOS CLIENTES (BOTÕES FUNCIONAM AQUI)
     app.register_blueprint(acoes_clientes)
 
     # =========================
-    # HOME -> DASHBOARD
+    # ROOT -> DASHBOARD
     # =========================
     @app.route("/")
     def index():
         return redirect(url_for("dashboard.dashboard_page"))
 
     # =========================
-    # ERRORS
+    # ERRORS SIMPLES
     # =========================
     @app.errorhandler(404)
     def not_found(error):
@@ -97,7 +103,7 @@ def create_app():
 
 
 # =========================
-# RUN
+# RUN APP
 # =========================
 app = create_app()
 
