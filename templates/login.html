@@ -1,62 +1,53 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Eirilar Shield - Login</title>
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
         body {
-            margin: 0;
             font-family: Arial, sans-serif;
-            background: #ffffff;
+            background: #0f0f0f;
+            color: white;
             display: flex;
-            height: 100vh;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         .box {
-            width: 360px;
+            background: #1c1c1c;
             padding: 30px;
-            border: 1px solid #eee;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            color: #d10000;
-            text-align: center;
+            border-radius: 10px;
+            width: 320px;
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            background: #d10000;
+            padding: 10px;
+            background: #ff3b3b;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
         }
 
         button:hover {
-            background: #a80000;
+            background: #ff1f1f;
         }
 
-        .footer {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 15px;
-            color: #777;
+        .msg {
+            color: #ff6b6b;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -64,18 +55,29 @@
 <body>
 
 <div class="box">
-    <h2>EIRILAR SHIELD</h2>
 
-    <form method="POST">
+    <h2>Login</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="msg">
+          {% for msg in messages %}
+            <p>{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('auth.login') }}">
+
         <input type="email" name="email" placeholder="Email" required>
+
         <input type="password" name="senha" placeholder="Senha" required>
 
         <button type="submit">Entrar</button>
+
     </form>
 
-    <div class="footer">
-        Sistema antifraude
-    </div>
 </div>
 
 </body>
