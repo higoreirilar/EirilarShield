@@ -12,6 +12,7 @@ from routes.usuarios import usuarios
 from routes.pedidos import pedidos
 from routes.logs import logs
 from routes.bloqueios import bloqueios
+from routes.risco import risco
 
 # =========================
 # APP FACTORY
@@ -31,6 +32,7 @@ def create_app():
         app.register_blueprint(pedidos)
         app.register_blueprint(logs)
         app.register_blueprint(bloqueios)
+        app.register_blueprint(risco)
 
     # =========================
     # LOGIN MANAGER
