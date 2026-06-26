@@ -8,11 +8,11 @@ auth = Blueprint("auth", __name__)
 
 
 # =========================
-# HOME
+# REDIRECIONA ROOT
 # =========================
 @auth.route("/")
 def home():
-    return redirect(url_for("dashboard.home"))
+    return redirect(url_for("auth.login"))
 
 
 # =========================
@@ -21,30 +21,35 @@ def home():
 @auth.route("/login", methods=["GET", "POST"])
 def login():
 
-    # 🔥 evita loop de login
+    # 🔥 se já estiver logado, vai pro dashboard
     if current_user.is_authenticated:
-        return redirect(url_for("dashboard.dashboard"))
+        return redirect(url_for("dashboard.home"))
 
     if request.method == "POST":
 
         email = (request.form.get("email") or "").strip()
         senha = request.form.get("senha") or ""
 
+        # validação básica
         if not email or not senha:
-            flash("Preencha todos os campos.", "danger")
+            flash("Preencha todos os campos", "danger")
             return render_template("login.html")
 
+        # busca usuário (case insensitive)
         usuario = Usuario.query.filter(
             func.lower(Usuario.email) == email.lower()
         ).first()
 
+        # valida senha
         if usuario and usuario.check_password(senha):
 
             login_user(usuario, remember=True)
 
-            return redirect(url_for("dashboard.dashboard"))
+            flash("Login realizado com sucesso", "success")
 
-        flash("Email ou senha inválidos.", "danger")
+            return redirect(url_for("dashboard.home"))
+
+        flash("Email ou senha inválidos", "danger")
 
     return render_template("login.html")
 
@@ -58,6 +63,6 @@ def logout():
 
     logout_user()
 
-    flash("Logout realizado com sucesso.", "success")
+    flash("Você saiu do sistema", "info")
 
     return redirect(url_for("auth.login"))
