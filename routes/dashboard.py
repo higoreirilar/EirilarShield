@@ -15,7 +15,7 @@ dashboard = Blueprint("dashboard", __name__)
 def dashboard_page():
 
     # =========================
-    # CLIENTES (CORRIGIDO - SQLALCHEMY)
+    # CLIENTES
     # =========================
     try:
         result = db.session.execute(text("""
@@ -26,25 +26,24 @@ def dashboard_page():
 
         rows_clientes = result.fetchall()
 
-        clientes = [
-            {
-                "nome": r[0],
-                "cpf": r[1],
-                "ip": r[2],
-                "cidade": r[3],
-                "estado": r[4],
-                "score": r[5],
-                "forma_pagamento": r[6]
-            }
-            for r in rows_clientes
-        ]
+        clientes = []
+        for r in rows_clientes:
+            clientes.append({
+                "nome": r[0] or "",
+                "cpf": r[1] or "",
+                "ip": r[2] or "",
+                "cidade": r[3] or "",
+                "estado": r[4] or "",
+                "score": r[5] if r[5] is not None else 0,
+                "forma_pagamento": r[6] or "N/A"
+            })
 
     except Exception as e:
         print("ERRO CLIENTES:", e)
         clientes = []
 
     # =========================
-    # PEDIDOS (ROBUSTO)
+    # PEDIDOS
     # =========================
     try:
         result = db.session.execute(text("""
@@ -59,18 +58,14 @@ def dashboard_page():
         ultimos_pedidos = []
 
         for r in rows_pedidos:
-
-            # risco automático caso não exista no banco
-            risco = random.randint(10, 100)
-
             ultimos_pedidos.append({
                 "id": r[0],
-                "status": r[1],
-                "valor": r[2],
-                "forma_pagamento": r[3],
-                "ip": r[4],
-                "nome_cliente": r[5],
-                "risco": risco
+                "status": r[1] or "indefinido",
+                "valor": r[2] or 0,
+                "forma_pagamento": r[3] or "N/A",
+                "ip": r[4] or "",
+                "nome_cliente": r[5] or "",
+                "risco": random.randint(10, 100)
             })
 
     except Exception as e:
@@ -95,8 +90,11 @@ def dashboard_page():
 
     print(f"[DASHBOARD] clientes={total_usuarios} pedidos={total_pedidos}")
 
+    # DEBUG (IMPORTANTE PRA VOCÊ VER SE ESTÁ VINDO DADO)
+    print("CLIENTES EXEMPLO:", clientes[:2])
+
     # =========================
-    # RENDER TEMPLATE
+    # RENDER
     # =========================
     return render_template(
         "dashboard.html",
