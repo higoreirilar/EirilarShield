@@ -1,11 +1,10 @@
 // ==============================
-// EIRILAR SHIELD - DASHBOARD JS
-// VERSÃO PROFISSIONAL
+// EIRILAR SHIELD - DASHBOARD JS FIXED
 // ==============================
 
 
 // ==============================
-// 🔧 HELPER FETCH POST
+// 🔧 FETCH BASE
 // ==============================
 async function post(url) {
     const r = await fetch(url, {
@@ -23,10 +22,10 @@ async function post(url) {
 // 🔴 BLOQUEAR
 // ==============================
 async function bloquear(id) {
-    const res = await post(`/cliente/bloquear/${id}`);
-
+    await post(`/cliente/bloquear/${id}`);
     toast("🔴 Cliente bloqueado");
-    atualizarStatusLocal(id, "bloqueado");
+
+    atualizarBadge(id, "bloqueado");
 }
 
 
@@ -34,26 +33,26 @@ async function bloquear(id) {
 // 🟢 DESBLOQUEAR
 // ==============================
 async function desbloquear(id) {
-    const res = await post(`/cliente/desbloquear/${id}`);
-
+    await post(`/cliente/desbloquear/${id}`);
     toast("🟢 Cliente desbloqueado");
-    atualizarStatusLocal(id, "ativo");
+
+    atualizarBadge(id, "ativo");
 }
 
 
 // ==============================
-// 🟡 EM ANÁLISE
+// 🟡 ANÁLISE
 // ==============================
 async function analise(id) {
-    const res = await post(`/cliente/analise/${id}`);
-
+    await post(`/cliente/analise/${id}`);
     toast("🟡 Cliente em análise");
-    atualizarStatusLocal(id, "analise");
+
+    atualizarBadge(id, "analise");
 }
 
 
 // ==============================
-// 🔵 DETALHES (MODAL PROFISSIONAL)
+// 🔵 DETALHES (MODAL)
 // ==============================
 async function detalhes(id) {
     const r = await fetch(`/cliente/detalhes/${id}`);
@@ -62,23 +61,24 @@ async function detalhes(id) {
     const html = `
         <div style="font-size:14px;line-height:1.8">
 
-            <p><b>Nome:</b> ${c.nome}</p>
-            <p><b>CPF:</b> ${c.cpf}</p>
-            <p><b>Telefone:</b> ${c.telefone}</p>
-            <p><b>IP:</b> ${c.ip}</p>
-            <p><b>Cidade:</b> ${c.cidade} - ${c.estado}</p>
-            <p><b>Score:</b> ${c.score}</p>
-            <p><b>Pagamento:</b> ${c.forma_pagamento}</p>
+            <div><b>Nome:</b> ${c.nome || ""}</div>
+            <div><b>CPF:</b> ${c.cpf || ""}</div>
+            <div><b>Telefone:</b> ${c.telefone || ""}</div>
+            <div><b>IP:</b> ${c.ip || ""}</div>
+            <div><b>Cidade:</b> ${c.cidade || ""} - ${c.estado || ""}</div>
+            <div><b>Score:</b> ${c.score || 0}</div>
+            <div><b>Pagamento:</b> ${c.forma_pagamento || ""}</div>
 
             <hr>
 
-            <h6>
+            <b>
                 ${
-                    c.score >= 70 ? "🔴 ALTO RISCO" :
-                    c.score >= 40 ? "🟡 MÉDIO RISCO" :
+                    (c.score >= 70) ? "🔴 ALTO RISCO" :
+                    (c.score >= 40) ? "🟡 MÉDIO RISCO" :
                     "🟢 BAIXO RISCO"
                 }
-            </h6>
+            </b>
+
         </div>
     `;
 
@@ -93,36 +93,35 @@ async function detalhes(id) {
 
 
 // ==============================
-// 📞 LIGAR CLIENTE
+// 📞 LIGAR
 // ==============================
 async function ligar(id) {
-    const res = await post(`/cliente/ligar/${id}`);
-
-    toast("📞 Ligando para " + res.telefone);
+    const r = await post(`/cliente/ligar/${id}`);
+    toast("📞 Ligando para " + r.telefone);
 }
 
 
 // ==============================
-// 🔎 BUSCA CLIENTES
+// 🔎 BUSCA
 // ==============================
 function buscarClientes(valor) {
     document.querySelectorAll(".client-card").forEach(card => {
-        card.style.display = card.innerText.toLowerCase()
-            .includes(valor.toLowerCase()) ? "block" : "none";
+        card.style.display =
+            card.innerText.toLowerCase().includes(valor.toLowerCase())
+                ? "block"
+                : "none";
     });
 }
 
 
 // ==============================
-// 🔁 ATUALIZA STATUS VISUAL SEM RELOAD
+// 🎯 ATUALIZAR BADGE (VISUAL)
 // ==============================
-function atualizarStatusLocal(id, status) {
+function atualizarBadge(id, status) {
     const card = document.querySelector(`[data-id="${id}"]`);
-
     if (!card) return;
 
     const badge = card.querySelector(".badge");
-
     if (!badge) return;
 
     if (status === "bloqueado") {
@@ -143,14 +142,12 @@ function atualizarStatusLocal(id, status) {
 
 
 // ==============================
-// 🔔 TOAST SIMPLES (UI PROFISSIONAL)
+// 🔔 TOAST
 // ==============================
 function toast(msg) {
-
-    let el = document.createElement("div");
+    const el = document.createElement("div");
 
     el.innerText = msg;
-
     el.style.position = "fixed";
     el.style.bottom = "20px";
     el.style.right = "20px";
@@ -159,6 +156,7 @@ function toast(msg) {
     el.style.padding = "12px 16px";
     el.style.borderRadius = "10px";
     el.style.zIndex = 9999;
+    el.style.fontSize = "13px";
 
     document.body.appendChild(el);
 
