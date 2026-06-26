@@ -174,3 +174,36 @@ class RiskAnalysis(db.Model):
     status = db.Column(db.String(40))
 
     created_at = db.Column(db.DateTime)
+
+
+# ==========================================
+# BLOCKED IPS
+# ==========================================
+class BlockedIP(db.Model):
+    __tablename__ = "blocked_ips"
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    ip = db.Column(db.String(50), nullable=False, unique=True)
+
+    reason = db.Column(db.Text)
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    def __repr__(self):
+        return f"<BlockedIP {self.ip}>"
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "ip": self.ip,
+            "reason": self.reason,
+            "created_at": (
+                self.created_at.strftime("%d/%m/%Y %H:%M")
+                if self.created_at
+                else None
+            )
+        }
