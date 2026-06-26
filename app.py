@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_login import LoginManager
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -42,7 +42,7 @@ def create_app():
     app.config.from_object(Config)
 
     # =========================
-    # PROXY (RAILWAY FIX)
+    # PROXY FIX (DEPLOY)
     # =========================
     app.wsgi_app = ProxyFix(
         app.wsgi_app,
@@ -63,7 +63,7 @@ def create_app():
     login_manager.init_app(app)
 
     # =========================
-    # BLUEPRINTS
+    # BLUEPRINTS (COMPATÍVEIS COM DASHBOARD)
     # =========================
     app.register_blueprint(auth)
     app.register_blueprint(dashboard)
@@ -74,22 +74,22 @@ def create_app():
     app.register_blueprint(risco)
 
     # =========================
-    # ROTAS BASE
+    # HOME (REDIRECIONA PRO DASHBOARD)
     # =========================
     @app.route("/")
     def index():
-        return "<h2>EIRILAR SHIELD ONLINE 🚀</h2>"
+        return render_template("index.html")
 
     # =========================
-    # ERROS
+    # ERROS COMPATÍVEIS COM FRONT
     # =========================
     @app.errorhandler(404)
     def not_found(error):
-        return "<h3>Página não encontrada</h3>", 404
+        return render_template("404.html"), 404
 
     @app.errorhandler(500)
     def server_error(error):
-        return "<h3>Erro interno do servidor</h3>", 500
+        return render_template("500.html"), 500
 
     return app
 
@@ -100,4 +100,8 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(
+        debug=True,
+        host="0.0.0.0",
+        port=5000
+    )
