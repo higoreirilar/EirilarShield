@@ -9,7 +9,7 @@ from models import Usuario
 from routes.auth import auth
 from routes.dashboard import dashboard
 from routes.usuarios import usuarios
-
+from routes.pedidos import pedidos
 
 # =========================
 # APP FACTORY
@@ -26,7 +26,7 @@ def create_app():
         app.register_blueprint(auth)
         app.register_blueprint(dashboard)
         app.register_blueprint(usuarios)
-
+        app.register_blueprint(pedidos)
     # =========================
     # LOGIN MANAGER
     # =========================
