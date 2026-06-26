@@ -11,59 +11,65 @@ dashboard = Blueprint("dashboard", __name__)
 def home():
 
     # =========================
+    # FUNÇÃO SEGURA PARA COUNT
+    # =========================
+    def safe_count(model):
+        try:
+            return model.query.count() or 0
+        except Exception as e:
+            print(f"COUNT ERROR {model}: {e}")
+            return 0
+
+    def safe_query_list(model, limit=5):
+        try:
+            return model.query.order_by(model.id.desc()).limit(limit).all()
+        except Exception as e:
+            print(f"QUERY ERROR {model}: {e}")
+            return []
+
+    def safe_risk_counts():
+        try:
+            total = RiskAnalysis.query.count() or 0
+
+            alto = RiskAnalysis.query.filter_by(risk_level="alto").count() or 0
+            medio = RiskAnalysis.query.filter_by(risk_level="medio").count() or 0
+            baixo = RiskAnalysis.query.filter_by(risk_level="baixo").count() or 0
+
+            scores = [
+                r.score for r in RiskAnalysis.query.all()
+                if r.score is not None
+            ]
+
+            media = round(sum(scores) / len(scores), 2) if scores else 0
+
+            return total, alto, medio, baixo, media
+
+        except Exception as e:
+            print("RISK ERROR:", e)
+            return 0, 0, 0, 0, 0
+
+    # =========================
     # KPIs
     # =========================
-    total_usuarios = Usuario.query.count() or 0
-    total_pedidos = Pedido.query.count() or 0
-    total_logs = Log.query.count() or 0
-    total_sessoes = LoginSession.query.count() or 0
+    total_usuarios = safe_count(Usuario)
+    total_pedidos = safe_count(Pedido)
+    total_logs = safe_count(Log)
+    total_sessoes = safe_count(LoginSession)
 
     # =========================
-    # RISCO (SAFE)
+    # RISCO
     # =========================
-    try:
-        risco_total = RiskAnalysis.query.count() or 0
-
-        risco_alto = RiskAnalysis.query.filter_by(risk_level="alto").count() or 0
-        risco_medio = RiskAnalysis.query.filter_by(risk_level="medio").count() or 0
-        risco_baixo = RiskAnalysis.query.filter_by(risk_level="baixo").count() or 0
-
-        scores = [
-            r.score for r in RiskAnalysis.query.all()
-            if r.score is not None
-        ]
-
-        media_risco = round(sum(scores) / len(scores), 2) if scores else 0
-
-    except Exception as e:
-        print("ERRO RISCO:", e)
-
-        risco_total = 0
-        risco_alto = 0
-        risco_medio = 0
-        risco_baixo = 0
-        media_risco = 0
+    risco_total, risco_alto, risco_medio, risco_baixo, media_risco = safe_risk_counts()
 
     # =========================
-    # ÚLTIMOS REGISTROS (SAFE)
+    # LISTAS
     # =========================
-    try:
-        ultimos_pedidos = Pedido.query.order_by(Pedido.id.desc()).limit(5).all()
-    except:
-        ultimos_pedidos = []
-
-    try:
-        ultimos_logs = Log.query.order_by(Log.id.desc()).limit(5).all()
-    except:
-        ultimos_logs = []
-
-    try:
-        ultimas_sessoes = LoginSession.query.order_by(LoginSession.id.desc()).limit(5).all()
-    except:
-        ultimas_sessoes = []
+    ultimos_pedidos = safe_query_list(Pedido)
+    ultimos_logs = safe_query_list(Log)
+    ultimas_sessoes = safe_query_list(LoginSession)
 
     # =========================
-    # TEMPLATE
+    # RENDER
     # =========================
     return render_template(
         "dashboard.html",
