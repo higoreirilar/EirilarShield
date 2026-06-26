@@ -2,7 +2,7 @@ from flask import Flask
 from flask_login import LoginManager
 
 from config import Config
-from database import init_db, db
+from database import init_db
 from models import Usuario
 
 # Blueprints
@@ -14,22 +14,34 @@ from routes.logs import logs
 from routes.bloqueios import bloqueios
 from routes.risco import risco
 
+
 # =========================
-# APP FACTORY
+# LOGIN MANAGER GLOBAL
+# =========================
+login_manager = LoginManager()
+login_manager.login_view = "auth.login"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return Usuario.query.get(int(user_id))
+
+
+# =========================
+# APP FACTORY (CORRETO)
 # =========================
 def create_app():
 
     app = Flask(__name__)
     app.config.from_object(Config)
 
-# =========================
-# BANCO DE DADOS
-# =========================
-def create_app():
-    app = Flask(__name__)
-
+    # DB
     init_db(app)
 
+    # LOGIN
+    login_manager.init_app(app)
+
+    # BLUEPRINTS
     app.register_blueprint(auth)
     app.register_blueprint(dashboard)
     app.register_blueprint(usuarios)
@@ -38,34 +50,12 @@ def create_app():
     app.register_blueprint(bloqueios)
     app.register_blueprint(risco)
 
-    return app
-
-    # =========================
-    # LOGIN MANAGER
-    # =========================
-    login_manager = LoginManager()
-    login_manager.init_app(app)
-    login_manager.login_view = "auth.login"
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return Usuario.query.get(int(user_id))
-
-    # =========================
-    # BLUEPRINTS
-    # =========================
-    app.register_blueprint(auth)
-
-    # =========================
     # ROTAS BÁSICAS
-    # =========================
     @app.route("/")
     def index():
         return "<h2>EIRILAR SHIELD rodando 🚀</h2>"
 
-    # =========================
     # ERROS
-    # =========================
     @app.errorhandler(404)
     def not_found(error):
         return "<h3>Página não encontrada</h3>", 404
