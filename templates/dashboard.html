@@ -10,63 +10,118 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body{background:#f5f6fa;font-family:Arial,sans-serif}
+body{
+background:#f4f6fb;
+font-family:Arial,sans-serif;
+}
 
 /* SIDEBAR */
 .sidebar{
-position:fixed;left:0;top:0;width:260px;height:100vh;
-background:#d90429;color:#fff;padding:25px;
-display:flex;flex-direction:column
+position:fixed;
+left:0;top:0;
+width:260px;height:100vh;
+background:linear-gradient(180deg,#d90429,#a1031f);
+color:#fff;
+padding:20px;
+display:flex;
+flex-direction:column;
 }
-.logo{width:180px;background:#fff;border-radius:14px;padding:12px;margin:0 auto 30px}
-.sidebar a{color:#fff;text-decoration:none;padding:12px 16px;border-radius:10px;margin:4px 0;display:block}
-.sidebar a:hover,.sidebar .active{background:rgba(255,255,255,.15)}
 
-/* CONTENT */
-.content{margin-left:280px;padding:25px}
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.logo{
+width:150px;
+margin-bottom:25px;
+}
 
-/* KPIs */
-.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
-.cardx{
-background:#fff;
-border-radius:14px;
-padding:15px;
-box-shadow:0 8px 20px rgba(0,0,0,.08);
+.sidebar a{
+color:#fff;
+text-decoration:none;
+padding:12px;
+border-radius:10px;
 display:flex;
 align-items:center;
 gap:10px;
+margin-bottom:5px;
 }
-.cardx i{font-size:22px}
+
+.sidebar a:hover,.active{
+background:rgba(255,255,255,0.15);
+}
+
+/* CONTENT */
+.content{
+margin-left:260px;
+padding:20px;
+}
+
+/* TOPBAR */
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+/* CARDS */
+.cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+}
+
+.cardx{
+background:#fff;
+border-radius:16px;
+padding:18px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
 
 /* GRID */
-.grid{display:grid;grid-template-columns:0.8fr 2.2fr;gap:15px;margin-top:15px}
-
-/* CLIENTE */
-.client-card{
-background:#fff;
-border-radius:14px;
-padding:12px;
-box-shadow:0 5px 12px rgba(0,0,0,.08);
-transition:.2s;
-font-size:13px;
-}
-.client-card:hover{transform:translateY(-2px)}
-
-/* BOTÕES */
-.btn-mini{font-size:11px;padding:4px 6px}
-
-/* PAGINAÇÃO */
-.pagination{
-justify-content:center;
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
 margin-top:20px;
+}
+
+/* TABLES */
+.table-card{
+background:#fff;
+padding:15px;
+border-radius:16px;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+margin-top:20px;
+}
+
+/* CLIENT ITEM */
+.client{
+display:flex;
+justify-content:space-between;
+padding:10px 0;
+border-bottom:1px solid #eee;
+font-size:14px;
+}
+
+/* ALERTS */
+.alert-item{
+display:flex;
+justify-content:space-between;
+padding:10px 0;
+border-bottom:1px solid #eee;
+font-size:14px;
+}
+
+.badge-soft{
+padding:4px 8px;
+border-radius:8px;
+font-size:12px;
 }
 
 /* RESPONSIVO */
 @media(max-width:900px){
-.sidebar{position:relative;width:100%;height:auto}
-.content{margin:0}
-.cards,.grid{grid-template-columns:1fr}
+.sidebar{display:none;}
+.content{margin:0;}
+.cards{grid-template-columns:1fr;}
+.grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -94,69 +149,69 @@ margin-top:20px;
 <!-- TOP -->
 <div class="topbar">
 <div>
-<h4>Dashboard</h4>
+<h3>Dashboard</h3>
 <small>Bem-vindo, {{ user.nome }}</small>
 </div>
+
 <input class="form-control" style="width:250px" placeholder="Pesquisar...">
 </div>
 
-<!-- KPIs -->
+<!-- KPI CARDS -->
 <div class="cards">
 
 <div class="cardx">
-<i class="bi bi-people-fill text-primary"></i>
-<div>
 <h5>{{ total_usuarios }}</h5>
 <small>Clientes</small>
 </div>
-</div>
 
 <div class="cardx">
-<i class="bi bi-bag-fill text-success"></i>
-<div>
 <h5>{{ total_pedidos }}</h5>
 <small>Pedidos</small>
 </div>
-</div>
 
 <div class="cardx">
-<i class="bi bi-file-earmark-text-fill text-secondary"></i>
-<div>
 <h5>{{ total_logs }}</h5>
 <small>Logs</small>
 </div>
-</div>
 
 <div class="cardx">
-<i class="bi bi-shield-fill-check text-warning"></i>
-<div>
 <h5>{{ media_risco }}</h5>
-<small>Score</small>
-</div>
-</div>
-
+<small>Score Médio</small>
 </div>
 
-<!-- RISCO + INTELIGÊNCIA -->
+</div>
+
+<!-- MAIN GRID -->
 <div class="grid">
 
-<!-- RISCO PEQUENO -->
+<!-- RISCO -->
 <div class="cardx">
-<h6>Risco</h6>
-<canvas id="chart" height="100"></canvas>
+<h5>Distribuição de Risco</h5>
+<canvas id="chart" height="120"></canvas>
 </div>
 
-<!-- INTELIGÊNCIA -->
+<!-- ESTATÍSTICAS -->
 <div class="cardx">
-<h6>Inteligência</h6>
+<h5>Estatísticas Gerais</h5>
 
-<div class="row g-2">
+<div class="client">
+<span>IPs Únicos</span>
+<b>{{ clientes|map(attribute='ip')|unique|list|length }}</b>
+</div>
 
-<div class="col-6"><div class="bg-light p-2 rounded"><small>Alto</small><h6 class="text-danger">{{ risco_alto }}</h6></div></div>
-<div class="col-6"><div class="bg-light p-2 rounded"><small>Baixo</small><h6 class="text-success">{{ risco_baixo }}</h6></div></div>
-<div class="col-6"><div class="bg-light p-2 rounded"><small>IPs</small><h6>{{ clientes|map(attribute='ip')|unique|list|length }}</h6></div></div>
-<div class="col-6"><div class="bg-light p-2 rounded"><small>Cidades</small><h6>{{ clientes|map(attribute='cidade')|unique|list|length }}</h6></div></div>
+<div class="client">
+<span>Cidades</span>
+<b>{{ clientes|map(attribute='cidade')|unique|list|length }}</b>
+</div>
 
+<div class="client">
+<span>Estados</span>
+<b>{{ clientes|map(attribute='estado')|unique|list|length }}</b>
+</div>
+
+<div class="client">
+<span>Alto Risco</span>
+<b style="color:red">{{ risco_alto }}</b>
 </div>
 
 </div>
@@ -164,19 +219,22 @@ margin-top:20px;
 </div>
 
 <!-- CLIENTES -->
-<div class="cardx mt-3">
-<h6>Clientes</h6>
-
-<div class="row g-2 mt-2">
+<div class="table-card">
+<h5>Clientes Recentes</h5>
 
 {% for c in clientes %}
 
-<div class="col-12 col-md-6 col-lg-4">
-<div class="client-card">
+<div class="client">
+<div>
+<b>{{ c.nome }}</b><br>
+<small>{{ c.cidade }} - {{ c.estado }}</small>
+</div>
 
-<div class="d-flex justify-content-between">
-<strong>{{ c.nome }}</strong>
+<div>
+<small>{{ c.cpf }}</small>
+</div>
 
+<div>
 {% if c.score >= 70 %}
 <span class="badge bg-danger">Alto</span>
 {% elif c.score >= 40 %}
@@ -184,20 +242,6 @@ margin-top:20px;
 {% else %}
 <span class="badge bg-success">Baixo</span>
 {% endif %}
-
-</div>
-
-<div>
-<small>{{ c.cpf }}</small><br>
-<small>{{ c.cidade }} - {{ c.estado }}</small>
-</div>
-
-<div class="mt-2 d-flex gap-1">
-<button class="btn btn-danger btn-sm btn-mini">Bloq</button>
-<button class="btn btn-success btn-sm btn-mini">Desb</button>
-<button class="btn btn-outline-dark btn-sm btn-mini">Ver</button>
-</div>
-
 </div>
 </div>
 
@@ -205,24 +249,24 @@ margin-top:20px;
 
 </div>
 
-<!-- PAGINAÇÃO -->
-<nav>
-<ul class="pagination">
+<!-- PEDIDOS -->
+<div class="table-card">
+<h5>Últimos Pedidos</h5>
 
-{% for p in range(1, total_pages + 1) %}
-<li class="page-item {% if p == page %}active{% endif %}">
-<a class="page-link" href="/dashboard?page={{ p }}">{{ p }}</a>
-</li>
+{% for p in ultimos_pedidos %}
+
+<div class="client">
+<div>#{{ p.id }} - {{ p.nome_cliente }}</div>
+<div>R$ {{ p.valor }}</div>
+<div>{{ p.status }}</div>
+</div>
+
 {% endfor %}
 
-</ul>
-</nav>
-
 </div>
 
 </div>
 
-<!-- CHART -->
 <script>
 new Chart(document.getElementById('chart'),{
 type:'doughnut',
