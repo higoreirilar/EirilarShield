@@ -28,9 +28,18 @@ display:flex;flex-direction:column
 
 /* KPIs */
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
-.cardx{background:#fff;border-radius:14px;padding:15px;box-shadow:0 8px 20px rgba(0,0,0,.08)}
+.cardx{
+background:#fff;
+border-radius:14px;
+padding:15px;
+box-shadow:0 8px 20px rgba(0,0,0,.08);
+display:flex;
+align-items:center;
+gap:10px;
+}
+.cardx i{font-size:22px}
 
-/* GRID RISCO */
+/* GRID */
 .grid{display:grid;grid-template-columns:0.8fr 2.2fr;gap:15px;margin-top:15px}
 
 /* CLIENTE */
@@ -93,10 +102,39 @@ margin-top:20px;
 
 <!-- KPIs -->
 <div class="cards">
-<div class="cardx"><i class="bi bi-people-fill"></i> {{ total_usuarios }} <small>Clientes</small></div>
-<div class="cardx"><i class="bi bi-bag-fill"></i> {{ total_pedidos }} <small>Pedidos</small></div>
-<div class="cardx"><i class="bi bi-file-earmark-text-fill"></i> {{ total_logs }} <small>Logs</small></div>
-<div class="cardx"><i class="bi bi-shield-fill-check"></i> {{ media_risco }} <small>Score</small></div>
+
+<div class="cardx">
+<i class="bi bi-people-fill text-primary"></i>
+<div>
+<h5>{{ total_usuarios }}</h5>
+<small>Clientes</small>
+</div>
+</div>
+
+<div class="cardx">
+<i class="bi bi-bag-fill text-success"></i>
+<div>
+<h5>{{ total_pedidos }}</h5>
+<small>Pedidos</small>
+</div>
+</div>
+
+<div class="cardx">
+<i class="bi bi-file-earmark-text-fill text-secondary"></i>
+<div>
+<h5>{{ total_logs }}</h5>
+<small>Logs</small>
+</div>
+</div>
+
+<div class="cardx">
+<i class="bi bi-shield-fill-check text-warning"></i>
+<div>
+<h5>{{ media_risco }}</h5>
+<small>Score</small>
+</div>
+</div>
+
 </div>
 
 <!-- RISCO + INTELIGÊNCIA -->
@@ -125,7 +163,7 @@ margin-top:20px;
 
 </div>
 
-<!-- CLIENTES (12 POR PÁGINA) -->
+<!-- CLIENTES -->
 <div class="cardx mt-3">
 <h6>Clientes</h6>
 
