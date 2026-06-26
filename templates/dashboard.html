@@ -3,34 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Eirilar Shield Dashboard</title>
+<title>SOC - Eirilar Shield</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* =======================
-   BASE
-======================= */
 body{
 margin:0;
-background:#0b0f14;
-font-family:Arial, sans-serif;
-color:#e8eef6;
-font-size:14px;
+background:#070a0f;
+font-family:Arial;
+color:#e6edf3;
 }
 
-/* =======================
-   SIDEBAR
-======================= */
+/* ================= SIDEBAR ================= */
 .sidebar{
 position:fixed;
 left:0;
 top:0;
-width:250px;
+width:260px;
 height:100vh;
-background:linear-gradient(180deg,#d90429,#8f001a);
+background:linear-gradient(180deg,#ff0033,#7a0018);
 padding:22px;
 display:flex;
 flex-direction:column;
@@ -44,7 +38,7 @@ margin-bottom:30px;
 .sidebar a{
 color:#fff;
 text-decoration:none;
-padding:12px 14px;
+padding:12px;
 border-radius:10px;
 display:flex;
 gap:10px;
@@ -55,44 +49,33 @@ transition:.2s;
 }
 
 .sidebar a:hover{
-background:rgba(255,255,255,0.12);
-}
-
-.active{
 background:rgba(0,0,0,0.25);
 }
 
-/* =======================
-   CONTENT
-======================= */
+/* ================= CONTENT ================= */
 .content{
-margin-left:250px;
+margin-left:260px;
 padding:24px;
 }
 
-/* =======================
-   TOPBAR
-======================= */
+/* ================= TOP ================= */
 .topbar{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:25px;
+margin-bottom:22px;
 }
 
-.topbar h3{
+.topbar h2{
+font-weight:900;
 font-size:22px;
-font-weight:800;
-margin:0;
 }
 
 .topbar small{
-opacity:0.7;
+opacity:0.6;
 }
 
-/* =======================
-   CARDS KPI
-======================= */
+/* ================= KPI CARDS ================= */
 .cards{
 display:grid;
 grid-template-columns:repeat(4,1fr);
@@ -100,26 +83,24 @@ gap:18px;
 }
 
 .cardx{
-background:#121821;
+background:#0f1622;
+border:1px solid rgba(255,255,255,0.05);
 border-radius:16px;
 padding:22px;
-box-shadow:0 10px 25px rgba(0,0,0,0.35);
-border:1px solid rgba(255,255,255,0.04);
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
 }
 
-.cardx h4{
+.cardx h3{
 font-size:28px;
-font-weight:800;
 margin:0;
+font-weight:800;
 }
 
 .cardx small{
 opacity:0.7;
 }
 
-/* =======================
-   GRID
-======================= */
+/* ================= GRID ================= */
 .grid{
 display:grid;
 grid-template-columns:1.3fr 1fr;
@@ -127,19 +108,15 @@ gap:18px;
 margin-top:22px;
 }
 
-/* =======================
-   CARD BASE
-======================= */
+/* ================= BOX ================= */
 .box{
-background:#121821;
+background:#0f1622;
 border-radius:16px;
 padding:18px;
-border:1px solid rgba(255,255,255,0.04);
+border:1px solid rgba(255,255,255,0.05);
 }
 
-/* =======================
-   CLIENT LIST
-======================= */
+/* ================= CLIENT LIST ================= */
 .client{
 display:flex;
 justify-content:space-between;
@@ -154,22 +131,26 @@ font-size:14px;
 }
 
 .client small{
-opacity:0.7;
-font-size:12px;
+opacity:0.6;
 }
 
-/* =======================
-   BADGES
-======================= */
-.badge{
-padding:6px 10px;
-border-radius:8px;
-font-size:11px;
+/* ================= ALERT COLORS ================= */
+.high{
+color:#ff3b3b;
+font-weight:700;
 }
 
-/* =======================
-   RESPONSIVO
-======================= */
+.medium{
+color:#ffcc00;
+font-weight:700;
+}
+
+.low{
+color:#2ee59d;
+font-weight:700;
+}
+
+/* ================= RESPONSIVE ================= */
 @media(max-width:900px){
 .sidebar{display:none;}
 .content{margin:0;}
@@ -185,11 +166,11 @@ font-size:11px;
 <div class="sidebar">
 <img class="logo" src="https://i.ibb.co/1tyzJs4j/logo-vermelho.png">
 
-<a class="active"><i class="bi bi-grid"></i> Dashboard</a>
-<a><i class="bi bi-people"></i> Usuários</a>
+<a><i class="bi bi-grid"></i> SOC Dashboard</a>
+<a><i class="bi bi-shield-exclamation"></i> Riscos</a>
+<a><i class="bi bi-people"></i> Clientes</a>
 <a><i class="bi bi-bag"></i> Pedidos</a>
 <a><i class="bi bi-file-text"></i> Logs</a>
-<a><i class="bi bi-shield-exclamation"></i> Risco</a>
 
 <div style="margin-top:auto">
 <a><i class="bi bi-box-arrow-right"></i> Sair</a>
@@ -202,34 +183,34 @@ font-size:11px;
 <!-- TOP -->
 <div class="topbar">
 <div>
-<h3>Dashboard</h3>
+<h2>SOC Monitoring Panel</h2>
 <small>Bem-vindo, {{ user.nome }}</small>
 </div>
 
-<input class="form-control" style="width:260px;background:#0f141c;border:1px solid #1f2a3a;color:#fff">
+<input class="form-control" style="width:260px;background:#0b111a;border:1px solid #1f2a3a;color:#fff">
 </div>
 
 <!-- KPI -->
 <div class="cards">
 
 <div class="cardx">
-<h4>{{ total_usuarios }}</h4>
-<small>Clientes</small>
+<h3>{{ total_usuarios }}</h3>
+<small>Clientes monitorados</small>
 </div>
 
 <div class="cardx">
-<h4>{{ total_pedidos }}</h4>
-<small>Pedidos</small>
+<h3>{{ total_pedidos }}</h3>
+<small>Eventos</small>
 </div>
 
 <div class="cardx">
-<h4>{{ total_logs }}</h4>
-<small>Logs</small>
+<h3>{{ total_logs }}</h3>
+<small>Logs ativos</small>
 </div>
 
 <div class="cardx">
-<h4>{{ media_risco }}</h4>
-<small>Score Médio</small>
+<h3>{{ media_risco }}</h3>
+<small>Score médio de risco</small>
 </div>
 
 </div>
@@ -238,40 +219,35 @@ font-size:11px;
 <div class="grid">
 
 <div class="box">
-<h5 style="margin-bottom:15px;">Distribuição de Risco</h5>
+<h5>Risk Distribution</h5>
 <canvas id="chart"></canvas>
 </div>
 
 <div class="box">
-<h5 style="margin-bottom:15px;">Resumo do Sistema</h5>
-
-<div class="client">
-<span>IPs únicos</span>
-<b>{{ clientes|map(attribute='ip')|unique|list|length }}</b>
-</div>
-
-<div class="client">
-<span>Cidades</span>
-<b>{{ clientes|map(attribute='cidade')|unique|list|length }}</b>
-</div>
-
-<div class="client">
-<span>Estados</span>
-<b>{{ clientes|map(attribute='estado')|unique|list|length }}</b>
-</div>
+<h5>Threat Overview</h5>
 
 <div class="client">
 <span>Alto risco</span>
-<b style="color:#ff3b3b">{{ risco_alto }}</b>
+<b class="high">{{ risco_alto }}</b>
+</div>
+
+<div class="client">
+<span>Risco médio</span>
+<b class="medium">{{ risco_medio }}</b>
+</div>
+
+<div class="client">
+<span>Baixo risco</span>
+<b class="low">{{ risco_baixo }}</b>
 </div>
 
 </div>
 
 </div>
 
-<!-- CLIENTES -->
+<!-- CLIENTS -->
 <div class="box" style="margin-top:22px;">
-<h5 style="margin-bottom:15px;">Clientes Recentes</h5>
+<h5>Client Monitoring Feed</h5>
 
 {% for c in clientes %}
 <div class="client">
@@ -281,32 +257,18 @@ font-size:11px;
 <small>{{ c.cidade }} - {{ c.estado }}</small>
 </div>
 
-<div>{{ c.cpf }}</div>
+<div>{{ c.ip }}</div>
 
 <div>
 {% if c.score >= 70 %}
-<span class="badge bg-danger">Alto</span>
+<span class="high">HIGH</span>
 {% elif c.score >= 40 %}
-<span class="badge bg-warning text-dark">Médio</span>
+<span class="medium">MED</span>
 {% else %}
-<span class="badge bg-success">Baixo</span>
+<span class="low">LOW</span>
 {% endif %}
 </div>
 
-</div>
-{% endfor %}
-
-</div>
-
-<!-- PEDIDOS -->
-<div class="box" style="margin-top:22px;">
-<h5 style="margin-bottom:15px;">Últimos Pedidos</h5>
-
-{% for p in ultimos_pedidos %}
-<div class="client">
-<div>#{{ p.id }} - {{ p.nome_cliente }}</div>
-<div>R$ {{ p.valor }}</div>
-<div>{{ p.status }}</div>
 </div>
 {% endfor %}
 
@@ -318,10 +280,10 @@ font-size:11px;
 new Chart(document.getElementById('chart'),{
 type:'doughnut',
 data:{
-labels:['Alto','Médio','Baixo'],
+labels:['High','Medium','Low'],
 datasets:[{
 data:[{{ risco_alto }},{{ risco_medio }},{{ risco_baixo }}],
-backgroundColor:['#ff2d2d','#f5c542','#2dd46f']
+backgroundColor:['#ff3b3b','#ffcc00','#2ee59d']
 }]
 },
 options:{
