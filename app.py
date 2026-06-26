@@ -19,6 +19,17 @@ from routes.risco import risco
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 
+from models import Usuario
+from database import db
+
+@login_manager.user_loader
+def load_user(user_id):
+    try:
+        return db.session.get(Usuario, int(user_id))
+    except Exception as e:
+        print("USER LOADER ERROR:", e)
+        return None
+
 
 @login_manager.user_loader
 def load_user(user_id):
