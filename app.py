@@ -22,17 +22,23 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # =========================
-    # BANCO DE DADOS
-    # =========================
+# =========================
+# BANCO DE DADOS
+# =========================
+def create_app():
+    app = Flask(__name__)
+
     init_db(app)
-        app.register_blueprint(auth)
-        app.register_blueprint(dashboard)
-        app.register_blueprint(usuarios)
-        app.register_blueprint(pedidos)
-        app.register_blueprint(logs)
-        app.register_blueprint(bloqueios)
-        app.register_blueprint(risco)
+
+    app.register_blueprint(auth)
+    app.register_blueprint(dashboard)
+    app.register_blueprint(usuarios)
+    app.register_blueprint(pedidos)
+    app.register_blueprint(logs)
+    app.register_blueprint(bloqueios)
+    app.register_blueprint(risco)
+
+    return app
 
     # =========================
     # LOGIN MANAGER
