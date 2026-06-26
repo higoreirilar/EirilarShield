@@ -2,160 +2,95 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SOC - Eirilar Shield</title>
+<title>Dashboard Antifraude</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body{
-margin:0;
-background:#070a0f;
-font-family:Arial;
-color:#e6edf3;
+body {
+    background: #f8f9fa;
+    font-family: Arial, sans-serif;
 }
 
-/* ================= SIDEBAR ================= */
-.sidebar{
-position:fixed;
-left:0;
-top:0;
-width:260px;
-height:100vh;
-background:linear-gradient(180deg,#ff0033,#7a0018);
-padding:22px;
-display:flex;
-flex-direction:column;
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    height: 100vh;
+    position: fixed;
+    background: #ffffff;
+    border-right: 2px solid #f1f1f1;
+    padding: 20px;
 }
 
-.logo{
-width:170px;
-margin-bottom:30px;
+.logo {
+    width: 140px;
+    margin-bottom: 25px;
 }
 
-.sidebar a{
-color:#fff;
-text-decoration:none;
-padding:12px;
-border-radius:10px;
-display:flex;
-gap:10px;
-align-items:center;
-margin-bottom:6px;
-font-size:14px;
-transition:.2s;
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
 }
 
-.sidebar a:hover{
-background:rgba(0,0,0,0.25);
+.menu a:hover {
+    background: #ffe5e5;
+    color: #c40000;
 }
 
-/* ================= CONTENT ================= */
-.content{
-margin-left:260px;
-padding:24px;
+.menu i {
+    color: #c40000;
 }
 
-/* ================= TOP ================= */
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:22px;
+/* MAIN */
+.main {
+    margin-left: 270px;
+    padding: 20px;
 }
 
-.topbar h2{
-font-weight:900;
-font-size:22px;
+/* TOPBAR */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
-.topbar small{
-opacity:0.6;
+.search-box {
+    width: 320px;
 }
 
-/* ================= KPI CARDS ================= */
-.cards{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:18px;
+.admin-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.cardx{
-background:#0f1622;
-border:1px solid rgba(255,255,255,0.05);
-border-radius:16px;
-padding:22px;
-box-shadow:0 10px 30px rgba(0,0,0,0.4);
+.admin-badge {
+    background: #c40000;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 13px;
 }
 
-.cardx h3{
-font-size:28px;
-margin:0;
-font-weight:800;
+/* CARDS */
+.card-stats {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-.cardx small{
-opacity:0.7;
-}
-
-/* ================= GRID ================= */
-.grid{
-display:grid;
-grid-template-columns:1.3fr 1fr;
-gap:18px;
-margin-top:22px;
-}
-
-/* ================= BOX ================= */
-.box{
-background:#0f1622;
-border-radius:16px;
-padding:18px;
-border:1px solid rgba(255,255,255,0.05);
-}
-
-/* ================= CLIENT LIST ================= */
-.client{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:14px 10px;
-border-bottom:1px solid rgba(255,255,255,0.06);
-font-size:14px;
-}
-
-.client b{
-font-size:14px;
-}
-
-.client small{
-opacity:0.6;
-}
-
-/* ================= ALERT COLORS ================= */
-.high{
-color:#ff3b3b;
-font-weight:700;
-}
-
-.medium{
-color:#ffcc00;
-font-weight:700;
-}
-
-.low{
-color:#2ee59d;
-font-weight:700;
-}
-
-/* ================= RESPONSIVE ================= */
-@media(max-width:900px){
-.sidebar{display:none;}
-.content{margin:0;}
-.cards{grid-template-columns:1fr;}
-.grid{grid-template-columns:1fr;}
+.text-red {
+    color: #c40000;
 }
 </style>
 </head>
@@ -164,133 +99,150 @@ font-weight:700;
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-<img class="logo" src="https://i.ibb.co/1tyzJs4j/logo-vermelho.png">
 
-<a><i class="bi bi-grid"></i> SOC Dashboard</a>
-<a><i class="bi bi-shield-exclamation"></i> Riscos</a>
-<a><i class="bi bi-people"></i> Clientes</a>
-<a><i class="bi bi-bag"></i> Pedidos</a>
-<a><i class="bi bi-file-text"></i> Logs</a>
+    <img class="logo" src="https://i.ibb.co/1tyzJs4j/logo-vermelho.png">
 
-<div style="margin-top:auto">
-<a><i class="bi bi-box-arrow-right"></i> Sair</a>
-</div>
-</div>
+    <div class="menu">
 
-<!-- CONTENT -->
-<div class="content">
+        <a href="#"><i class="bi bi-person-circle"></i> Usuários</a>
+        <a href="#"><i class="bi bi-bag"></i> Pedidos</a>
+        <a href="#"><i class="bi bi-journal-text"></i> Logs</a>
+        <a href="#"><i class="bi bi-shield-check"></i> Regras</a>
+        <a href="#"><i class="bi bi-exclamation-triangle"></i> Risco</a>
+        <a href="#"><i class="bi bi-bell"></i> Alertas</a>
+        <a href="#"><i class="bi bi-graph-up"></i> Relatórios</a>
+        <a href="#"><i class="bi bi-gear"></i> Configurações</a>
 
-<!-- TOP -->
-<div class="topbar">
-<div>
-<h2>SOC Monitoring Panel</h2>
-<small>Bem-vindo, {{ user.nome }}</small>
+    </div>
 </div>
 
-<input class="form-control" style="width:260px;background:#0b111a;border:1px solid #1f2a3a;color:#fff">
+<!-- MAIN -->
+<div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+        <!-- SEARCH -->
+        <input class="form-control search-box" placeholder="Buscar CPF, IP, pedido...">
+
+        <!-- ADMIN PANEL -->
+        <div class="admin-box">
+
+            <i class="bi bi-bell fs-5 position-relative">
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    3
+                </span>
+            </i>
+
+            <div class="admin-badge">
+                Administrador Logado
+            </div>
+
+            <i class="bi bi-person-circle fs-4 text-danger"></i>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-3">
+            <div class="card card-stats p-3">
+                <h6>Usuários</h6>
+                <h3>1.248</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-stats p-3">
+                <h6>Pedidos</h6>
+                <h3>312</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-stats p-3">
+                <h6>Risco Alto</h6>
+                <h3 class="text-red">27</h3>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-stats p-3">
+                <h6>Alertas</h6>
+                <h3 class="text-red">9</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TABELA -->
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-white">
+            <strong>Transações em Análise</strong>
+        </div>
+
+        <div class="card-body p-0">
+
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>IP</th>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Telefone</th>
+                        <th>Cidade</th>
+                        <th>Estado</th>
+                        <th>Valor</th>
+                        <th>Pagamento</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>189.54.22.10</td>
+                        <td>João Silva</td>
+                        <td>123.456.789-00</td>
+                        <td>(11) 99999-0000</td>
+                        <td>São Paulo</td>
+                        <td>SP</td>
+                        <td>R$ 1.299,90</td>
+                        <td>Cartão</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-lock"></i></button>
+                            <button class="btn btn-sm btn-success"><i class="bi bi-unlock"></i></button>
+                            <button class="btn btn-sm btn-primary"><i class="bi bi-telephone"></i></button>
+                            <button class="btn btn-sm btn-dark"><i class="bi bi-person"></i></button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>201.33.88.91</td>
+                        <td>Maria Souza</td>
+                        <td>987.654.321-11</td>
+                        <td>(17) 98888-2222</td>
+                        <td>São José do Rio Preto</td>
+                        <td>SP</td>
+                        <td>R$ 459,00</td>
+                        <td>PIX</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger"><i class="bi bi-lock"></i></button>
+                            <button class="btn btn-sm btn-success"><i class="bi bi-unlock"></i></button>
+                            <button class="btn btn-sm btn-primary"><i class="bi bi-telephone"></i></button>
+                            <button class="btn btn-sm btn-dark"><i class="bi bi-person"></i></button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
 </div>
 
-<!-- KPI -->
-<div class="cards">
-
-<div class="cardx">
-<h3>{{ total_usuarios }}</h3>
-<small>Clientes monitorados</small>
-</div>
-
-<div class="cardx">
-<h3>{{ total_pedidos }}</h3>
-<small>Eventos</small>
-</div>
-
-<div class="cardx">
-<h3>{{ total_logs }}</h3>
-<small>Logs ativos</small>
-</div>
-
-<div class="cardx">
-<h3>{{ media_risco }}</h3>
-<small>Score médio de risco</small>
-</div>
-
-</div>
-
-<!-- GRID -->
-<div class="grid">
-
-<div class="box">
-<h5>Risk Distribution</h5>
-<canvas id="chart"></canvas>
-</div>
-
-<div class="box">
-<h5>Threat Overview</h5>
-
-<div class="client">
-<span>Alto risco</span>
-<b class="high">{{ risco_alto }}</b>
-</div>
-
-<div class="client">
-<span>Risco médio</span>
-<b class="medium">{{ risco_medio }}</b>
-</div>
-
-<div class="client">
-<span>Baixo risco</span>
-<b class="low">{{ risco_baixo }}</b>
-</div>
-
-</div>
-
-</div>
-
-<!-- CLIENTS -->
-<div class="box" style="margin-top:22px;">
-<h5>Client Monitoring Feed</h5>
-
-{% for c in clientes %}
-<div class="client">
-
-<div>
-<b>{{ c.nome }}</b><br>
-<small>{{ c.cidade }} - {{ c.estado }}</small>
-</div>
-
-<div>{{ c.ip }}</div>
-
-<div>
-{% if c.score >= 70 %}
-<span class="high">HIGH</span>
-{% elif c.score >= 40 %}
-<span class="medium">MED</span>
-{% else %}
-<span class="low">LOW</span>
-{% endif %}
-</div>
-
-</div>
-{% endfor %}
-
-</div>
-
-</div>
-
-<script>
-new Chart(document.getElementById('chart'),{
-type:'doughnut',
-data:{
-labels:['High','Medium','Low'],
-datasets:[{
-data:[{{ risco_alto }},{{ risco_medio }},{{ risco_baixo }}],
-backgroundColor:['#ff3b3b','#ffcc00','#2ee59d']
-}]
-},
-options:{
-plugins:{legend:{position:'bottom'}}
-}
-});
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
