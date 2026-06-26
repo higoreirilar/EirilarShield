@@ -4,7 +4,9 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import Config
 from database import init_db
+from models import Usuario
 
+# Blueprints
 from routes.auth import auth
 from routes.dashboard import dashboard
 from routes.usuarios import usuarios
@@ -13,45 +15,56 @@ from routes.logs import logs
 from routes.bloqueios import bloqueios
 from routes.risco import risco
 
-from models import Usuario
 
-
+# =========================
+# LOGIN MANAGER
+# =========================
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
+login_manager.session_protection = "strong"
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
+    try:
+        return Usuario.query.get(int(user_id))
+    except Exception as e:
+        print("USER LOADER ERROR:", e)
+        return None
 
 
+# =========================
+# APP FACTORY
+# =========================
 def create_app():
 
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # 🔥 PROXY (SÓ UMA VEZ)
+    # =========================
+    # PROXY (RAILWAY FIX)
+    # =========================
     app.wsgi_app = ProxyFix(
         app.wsgi_app,
         x_for=1,
         x_proto=1,
-        x_host=1
+        x_host=1,
+        x_port=1
     )
 
-    # 🔥 SESSÃO
-    app.secret_key = app.config["SECRET_KEY"]
-
-    app.config["SESSION_COOKIE_SECURE"] = True
-    app.config["SESSION_COOKIE_HTTPONLY"] = True
-    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-
-    # DB
+    # =========================
+    # DB INIT
+    # =========================
     init_db(app)
 
-    # LOGIN
+    # =========================
+    # LOGIN INIT
+    # =========================
     login_manager.init_app(app)
 
+    # =========================
     # BLUEPRINTS
+    # =========================
     app.register_blueprint(auth)
     app.register_blueprint(dashboard)
     app.register_blueprint(usuarios)
@@ -60,7 +73,31 @@ def create_app():
     app.register_blueprint(bloqueios)
     app.register_blueprint(risco)
 
+    # =========================
+    # ROTAS BASE
+    # =========================
+    @app.route("/")
+    def index():
+        return "<h2>EIRILAR SHIELD ONLINE 🚀</h2>"
+
+    # =========================
+    # ERROS
+    # =========================
+    @app.errorhandler(404)
+    def not_found(error):
+        return "<h3>Página não encontrada</h3>", 404
+
+    @app.errorhandler(500)
+    def server_error(error):
+        return "<h3>Erro interno do servidor</h3>", 500
+
     return app
 
 
+# =========================
+# RUN
+# =========================
 app = create_app()
+
+if __name__ == "__main__":
+    app.run(debug=True)
