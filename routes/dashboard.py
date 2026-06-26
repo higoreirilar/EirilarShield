@@ -20,15 +20,19 @@ def dashboard_page():
     offset = (page - 1) * per_page
 
     # =========================
-    # CLIENTES (COM COUNT REAL)
+    # TOTAL DE CLIENTES (REAL)
     # =========================
     try:
-        # total real de clientes
-        total_clientes = db.session.execute(text(
-            "SELECT COUNT(*) FROM clientes"
-        )).scalar()
+        total_usuarios = db.session.execute(
+            text("SELECT COUNT(*) FROM clientes")
+        ).scalar()
+    except:
+        total_usuarios = 0
 
-        # clientes paginados
+    # =========================
+    # CLIENTES (PAGINADO)
+    # =========================
+    try:
         result = db.session.execute(text("""
             SELECT nome, cpf, ip, cidade, estado, score, forma_pagamento
             FROM clientes
@@ -43,7 +47,7 @@ def dashboard_page():
                 "ip": r[2] or "",
                 "cidade": r[3] or "",
                 "estado": r[4] or "",
-                "score": r[5] if r[5] is not None else 0,
+                "score": r[5] or 0,
                 "forma_pagamento": r[6] or "N/A"
             }
             for r in result.fetchall()
@@ -52,16 +56,18 @@ def dashboard_page():
     except Exception as e:
         print("ERRO CLIENTES:", e)
         clientes = []
-        total_clientes = 0
-
-    total_pages = math.ceil(total_clientes / per_page) if total_clientes else 1
 
     # =========================
-    # PEDIDOS
+    # TOTAL DE PÁGINAS
+    # =========================
+    total_pages = math.ceil(total_usuarios / per_page) if total_usuarios else 1
+
+    # =========================
+    # PEDIDOS (ÚLTIMOS 10)
     # =========================
     try:
         result = db.session.execute(text("""
-            SELECT id, status, valor, forma_pagamento, ip, nome_cliente
+            SELECT id, status, valor, nome_cliente
             FROM pedidos
             ORDER BY id DESC
             LIMIT 10
@@ -72,10 +78,7 @@ def dashboard_page():
                 "id": r[0],
                 "status": r[1] or "indefinido",
                 "valor": float(r[2] or 0),
-                "forma_pagamento": r[3] or "N/A",
-                "ip": r[4] or "",
-                "nome_cliente": r[5] or "",
-                "risco": random.randint(10, 100)
+                "nome_cliente": r[3] or ""
             }
             for r in result.fetchall()
         ]
@@ -85,7 +88,7 @@ def dashboard_page():
         ultimos_pedidos = []
 
     # =========================
-    # MÉTRICAS DE RISCO
+    # RISCO (BASEADO NOS CLIENTES DA PÁGINA)
     # =========================
     scores = [c["score"] for c in clientes if c.get("score") is not None]
 
@@ -96,35 +99,38 @@ def dashboard_page():
     media_risco = round(sum(scores) / len(scores), 2) if scores else 0
 
     # =========================
-    # MÉTRICAS GERAIS
+    # LOGS (MOCK OU FUTURO BANCO)
     # =========================
-    total_usuarios = total_clientes
-    total_pedidos = len(ultimos_pedidos)
-    total_logs = 120  # futuramente pode vir do banco
+    total_logs = 120
 
     # =========================
     # DEBUG
     # =========================
-    print(f"[DASHBOARD] clientes={len(clientes)} pedidos={total_pedidos}")
+    print(f"[DASHBOARD] usuários={total_usuarios} clientes_page={len(clientes)}")
 
     # =========================
     # RENDER
     # =========================
     return render_template(
         "dashboard.html",
+
+        # dados principais
         clientes=clientes,
         ultimos_pedidos=ultimos_pedidos,
         user=current_user,
 
+        # KPIs
         total_usuarios=total_usuarios,
-        total_pedidos=total_pedidos,
+        total_pedidos=len(ultimos_pedidos),
         total_logs=total_logs,
-
         media_risco=media_risco,
+
+        # risco
         risco_alto=risco_alto,
         risco_medio=risco_medio,
         risco_baixo=risco_baixo,
 
+        # paginação
         page=page,
         total_pages=total_pages
     )
