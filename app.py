@@ -1,8 +1,9 @@
 from flask import Flask
 from flask_login import LoginManager
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from config import Config
-from database import init_db
+from database import init_db, db
 from models import Usuario
 
 # Blueprints
@@ -15,25 +16,22 @@ from routes.bloqueios import bloqueios
 from routes.risco import risco
 
 
-# =========================
-# LOGIN MANAGER GLOBAL
-# =========================
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
+    return db.session.get(Usuario, int(user_id))
 
 
-# =========================
-# APP FACTORY (CORRETO)
-# =========================
 def create_app():
 
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    # 🔥 NECESSÁRIO NO RAILWAY (proxy HTTPS)
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
     # DB
     init_db(app)
@@ -50,12 +48,10 @@ def create_app():
     app.register_blueprint(bloqueios)
     app.register_blueprint(risco)
 
-    # ROTAS BÁSICAS
     @app.route("/")
     def index():
         return "<h2>EIRILAR SHIELD rodando 🚀</h2>"
 
-    # ERROS
     @app.errorhandler(404)
     def not_found(error):
         return "<h3>Página não encontrada</h3>", 404
@@ -67,9 +63,6 @@ def create_app():
     return app
 
 
-# =========================
-# EXECUÇÃO
-# =========================
 app = create_app()
 
 if __name__ == "__main__":
