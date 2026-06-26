@@ -7,6 +7,7 @@ from models import Usuario
 
 # Blueprints
 from routes.auth import auth
+from routes.dashboard import dashboard
 
 
 # =========================
@@ -21,6 +22,8 @@ def create_app():
     # BANCO DE DADOS
     # =========================
     init_db(app)
+        app.register_blueprint(auth)
+    app.register_blueprint(dashboard)
 
     # =========================
     # LOGIN MANAGER
