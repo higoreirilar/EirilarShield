@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, redirect, url_for
 from flask_login import LoginManager
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -41,9 +41,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # =========================
-    # PROXY FIX (DEPLOY)
-    # =========================
+    # Proxy (deploy)
     app.wsgi_app = ProxyFix(
         app.wsgi_app,
         x_for=1,
@@ -52,19 +50,13 @@ def create_app():
         x_port=1
     )
 
-    # =========================
-    # DB INIT
-    # =========================
+    # DB
     init_db(app)
 
-    # =========================
-    # LOGIN INIT
-    # =========================
+    # LOGIN
     login_manager.init_app(app)
 
-    # =========================
-    # BLUEPRINTS (COMPATÍVEIS COM DASHBOARD)
-    # =========================
+    # BLUEPRINTS
     app.register_blueprint(auth)
     app.register_blueprint(dashboard)
     app.register_blueprint(usuarios)
@@ -74,22 +66,22 @@ def create_app():
     app.register_blueprint(risco)
 
     # =========================
-    # HOME (REDIRECIONA PRO DASHBOARD)
+    # HOME -> DASHBOARD
     # =========================
     @app.route("/")
     def index():
-        return render_template("index.html")
+        return redirect(url_for("dashboard.dashboard_page"))
 
     # =========================
-    # ERROS COMPATÍVEIS COM FRONT
+    # ERRORS (SIMPLIFICADO)
     # =========================
     @app.errorhandler(404)
     def not_found(error):
-        return render_template("404.html"), 404
+        return "Página não encontrada", 404
 
     @app.errorhandler(500)
     def server_error(error):
-        return render_template("500.html"), 500
+        return "Erro interno do servidor", 500
 
     return app
 
