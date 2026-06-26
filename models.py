@@ -5,16 +5,33 @@ from datetime import datetime
 # ==========================================
 # USUÁRIOS
 # ==========================================
+from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
+
 class Usuario(db.Model):
+
     __tablename__ = "usuarios"
 
     id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.Text)
-    email = db.Column(db.Text, unique=True)
-    senha = db.Column(db.Text)
-    role = db.Column(db.Text)
+
+    nome = db.Column(db.Text, nullable=False)
+
+    email = db.Column(db.Text, unique=True, nullable=False)
+
+    senha = db.Column(db.Text, nullable=False)
+
+    role = db.Column(db.Text, default="usuario")
+
     created_at = db.Column(db.Text)
 
+    def set_password(self, password):
+        self.senha = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.senha, password)
+
+    def __repr__(self):
+        return f"<Usuario {self.email}>"
 
 # ==========================================
 # PEDIDOS
