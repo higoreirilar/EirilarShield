@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+# =========================
+# DATABASE URL
+# =========================
 def get_database_url():
     url = os.getenv("DATABASE_URL")
 
@@ -13,25 +16,19 @@ def get_database_url():
     return url
 
 
+# =========================
+# CONFIG PRINCIPAL
+# =========================
 class Config:
 
-    # =========================
-    # SEGURANÇA
-    # =========================
+    # 🔐 SEGURANÇA
     SECRET_KEY = os.getenv(
         "SECRET_KEY",
         "eirilar_shield_super_secret_key_2026"
     )
 
     # =========================
-    # SESSÃO (ESSENCIAL NO RAILWAY)
-    # =========================
-    SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = "Lax"
-
-    # =========================
-    # BANCO
+    # BANCO DE DADOS
     # =========================
     SQLALCHEMY_DATABASE_URI = get_database_url()
 
@@ -44,6 +41,14 @@ class Config:
         "pool_pre_ping": True,
         "pool_recycle": 300
     }
+
+    # =========================
+    # SESSÃO (FALHA MAIS COMUM NO LOGIN LOOP)
+    # =========================
+    SESSION_COOKIE_SECURE = False  # 🔥 IMPORTANTE PRA TESTE
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    SESSION_REFRESH_EACH_REQUEST = False
 
     # =========================
     # APP INFO
