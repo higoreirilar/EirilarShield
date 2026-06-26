@@ -31,7 +31,10 @@ def home():
     risco_baixo = RiskAnalysis.query.filter_by(risk_level="baixo").count()
 
     # média de score (seguro contra None)
-    scores = [r.score for r in RiskAnalysis.query.all() if r.score is not None]
+    scores = [
+        r.score for r in RiskAnalysis.query.all()
+        if r.score is not None
+    ]
     media_risco = sum(scores) / len(scores) if scores else 0
 
     # =========================
@@ -42,11 +45,10 @@ def home():
     ultimas_sessoes = LoginSession.query.order_by(LoginSession.id.desc()).limit(5).all()
 
     # =========================
-    # RETORNO PARA TEMPLATE
+    # RETORNO TEMPLATE
     # =========================
     return render_template(
         "dashboard.html",
-
         user=current_user,
 
         # KPIs
