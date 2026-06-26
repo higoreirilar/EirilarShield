@@ -30,22 +30,25 @@ def create_app():
 
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    # Proxy (Railway)
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+
+    # Segurança de sessão
     app.secret_key = app.config["SECRET_KEY"]
 
-app.config["SESSION_COOKIE_SECURE"] = True
-app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
-
-app.config["SESSION_PROTECTION"] = "strong"
-
-    # 🔥 NECESSÁRIO NO RAILWAY (proxy HTTPS)
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+    app.config["SESSION_COOKIE_SECURE"] = True
+    app.config["SESSION_COOKIE_HTTPONLY"] = True
+    app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+    app.config["SESSION_PROTECTION"] = "strong"
 
     # DB
     init_db(app)
 
     # LOGIN
     login_manager.init_app(app)
+    login_manager.login_view = "auth.login"
 
     # BLUEPRINTS
     app.register_blueprint(auth)
@@ -55,18 +58,6 @@ app.config["SESSION_PROTECTION"] = "strong"
     app.register_blueprint(logs)
     app.register_blueprint(bloqueios)
     app.register_blueprint(risco)
-
-    @app.route("/")
-    def index():
-        return "<h2>EIRILAR SHIELD rodando 🚀</h2>"
-
-    @app.errorhandler(404)
-    def not_found(error):
-        return "<h3>Página não encontrada</h3>", 404
-
-    @app.errorhandler(500)
-    def server_error(error):
-        return "<h3>Erro interno do servidor</h3>", 500
 
     return app
 
