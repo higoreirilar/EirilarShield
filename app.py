@@ -17,8 +17,11 @@ from routes.logs import logs
 from routes.bloqueios import bloqueios
 from routes.risco import risco
 
-# 🔥 AÇÕES DOS CLIENTES (ESSENCIAL PARA OS BOTÕES)
+# 🔥 AÇÕES DOS CLIENTES
 from routes.acoes_clientes import acoes_clientes
+
+# 🚨 ALERTAS (FALTAVA ISSO)
+from routes.alertas import alertas
 
 
 # =========================
@@ -77,9 +80,10 @@ def create_app():
     app.register_blueprint(logs)
     app.register_blueprint(bloqueios)
     app.register_blueprint(risco)
-
-    # 🔥 AÇÕES DOS CLIENTES (BOTÕES FUNCIONAM AQUI)
     app.register_blueprint(acoes_clientes)
+
+    # 🚨 ALERTAS REGISTRADO AQUI
+    app.register_blueprint(alertas)
 
     # =========================
     # ROOT -> DASHBOARD
@@ -89,7 +93,7 @@ def create_app():
         return redirect(url_for("dashboard.dashboard_page"))
 
     # =========================
-    # ERRORS SIMPLES
+    # ERRORS
     # =========================
     @app.errorhandler(404)
     def not_found(error):
