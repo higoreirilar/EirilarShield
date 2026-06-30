@@ -1,229 +1,1389 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Dashboard Antifraude</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends "base.html" %}
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+{% block title %}Dashboard{% endblock %}
 
-<style>
+{% block page_title %}
+Dashboard Antifraude
+{% endblock %}
 
-body{
-    background:#f4f6fb;
-    font-family: Arial, sans-serif;
-}
+{% block content %}
 
-/* SIDEBAR */
-.sidebar{
-    width:260px;
-    height:100vh;
-    position:fixed;
-    background:linear-gradient(180deg,#ff2d2d,#c40000);
-    color:white;
-    padding:20px;
-}
+<!-- =======================================
+CARDS PRINCIPAIS
+======================================= -->
 
-.logo-box{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    margin-bottom:25px;
-}
+<div class="cards">
 
-.logo-box img{
-    width:120px;
-}
+    <!-- Usuários -->
 
-/* MENU */
-.menu a{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    padding:12px;
-    color:white;
-    text-decoration:none;
-    border-radius:10px;
-    margin-bottom:8px;
-    opacity:0.9;
-}
+    <div class="card-dashboard fade-in">
 
-.menu a:hover{
-    background:rgba(255,255,255,0.15);
-    opacity:1;
-}
+        <div class="card-icon">
+            <i class="bi bi-people-fill"></i>
+        </div>
 
-/* MAIN */
-.main{
-    margin-left:260px;
-    padding:20px;
-}
+        <div class="card-title">
+            Usuários
+        </div>
 
-/* TOPBAR */
-.topbar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:20px;
-}
+        <div class="card-value">
 
-.search{
-    width:400px;
-    border-radius:10px;
-}
+            {{ total_usuarios }}
 
-/* CARDS */
-.card-box{
-    border-radius:16px;
-    padding:18px;
-    color:white;
-}
+        </div>
 
-.blue{background:linear-gradient(135deg,#3b82f6,#1d4ed8);}
-.orange{background:linear-gradient(135deg,#f97316,#ea580c);}
-.purple{background:linear-gradient(135deg,#a855f7,#6b21a8);}
-.green{background:linear-gradient(135deg,#22c55e,#15803d);}
+        <div class="card-growth">
 
-.small-text{
-    font-size:12px;
-    opacity:0.85;
-}
+            <i class="bi bi-arrow-up"></i>
 
-/* PANELS */
-.panel{
-    background:white;
-    border-radius:16px;
-    padding:15px;
-    box-shadow:0 4px 15px rgba(0,0,0,0.06);
-}
+            +12%
 
-</style>
-</head>
+        </div>
 
-<body>
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-
-    <div class="logo-box">
-        <img src="https://i.ibb.co/VWzx61J4/logo-vermelho.png" alt="logo">
     </div>
 
-    <div class="menu">
-        <a href="/dashboard"><i class="bi bi-grid"></i> Dashboard</a>
-        <a href="/usuarios"><i class="bi bi-people"></i> Usuários</a>
-        <a href="/pedidos"><i class="bi bi-bag"></i> Pedidos</a>
-        <a href="/risco"><i class="bi bi-shield"></i> Análise de Risco</a>
-        <a href="/alertas"><i class="bi bi-bell"></i> Regras e Alertas</a>
-        <a href="/logs"><i class="bi bi-file-text"></i> Logs</a>
-        <a href="/dispositivos"><i class="bi bi-phone"></i> Dispositivos</a>
+    <!-- Pedidos -->
+
+    <div class="card-dashboard fade-in">
+
+        <div class="card-icon">
+
+            <i class="bi bi-bag-check-fill"></i>
+
+        </div>
+
+        <div class="card-title">
+
+            Pedidos
+
+        </div>
+
+        <div class="card-value">
+
+            {{ total_pedidos }}
+
+        </div>
+
+        <div class="card-growth">
+
+            <i class="bi bi-arrow-up"></i>
+
+            +5%
+
+        </div>
+
+    </div>
+
+    <!-- Logs -->
+
+    <div class="card-dashboard fade-in">
+
+        <div class="card-icon">
+
+            <i class="bi bi-file-earmark-text-fill"></i>
+
+        </div>
+
+        <div class="card-title">
+
+            Logs
+
+        </div>
+
+        <div class="card-value">
+
+            {{ total_logs }}
+
+        </div>
+
+        <div class="card-growth">
+
+            <i class="bi bi-arrow-up"></i>
+
+            +18%
+
+        </div>
+
+    </div>
+
+    <!-- Score -->
+
+    <div class="card-dashboard fade-in">
+
+        <div class="card-icon">
+
+            <i class="bi bi-shield-check"></i>
+
+        </div>
+
+        <div class="card-title">
+
+            Score Médio
+
+        </div>
+
+        <div class="card-value">
+
+            {{ "%.2f"|format(score_medio) }}
+
+        </div>
+
+        <div class="card-growth">
+
+            Sistema saudável
+
+        </div>
+
     </div>
 
 </div>
 
-<!-- MAIN -->
-<div class="main">
+<!-- =======================================
+GRID PRINCIPAL
+======================================= -->
 
-    <!-- TOPBAR -->
-    <div class="topbar">
+<div class="dashboard-grid">
 
-        <h4>Dashboard Antifraude</h4>
+    <!-- ESQUERDA -->
 
-        <input class="form-control search" placeholder="Pesquisar...">
+    <div class="left-column">
 
-        <div class="d-flex align-items-center gap-3">
+        <!-- SCORE -->
 
-            <i class="bi bi-bell fs-5"></i>
+        <div class="panel">
 
-            <div class="d-flex align-items-center gap-2">
-                <img src="/static/user.png" width="35" style="border-radius:50%">
+            <div class="panel-header">
+
                 <div>
-                    <div style="font-size:13px;">Admin</div>
-                    <small>Administrador</small>
+
+                    <div class="panel-title">
+
+                        Score Médio
+
+                    </div>
+
+                    <div class="panel-subtitle">
+
+                        Últimos 30 dias
+
+                    </div>
+
                 </div>
+
+            </div>
+
+            <div class="chart-box">
+
+                <canvas id="scoreChart"></canvas>
+
+            </div>
+
+        </div>
+
+        <!-- PEDIDOS -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <div class="panel-title">
+
+                        Pedidos Recentes
+
+                    </div>
+
+                    <div class="panel-subtitle">
+
+                        Últimas solicitações
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table-modern">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Cliente</th>
+
+                        <th>Valor</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <!-- Continuação Parte 2 -->
+
+                    </tbody>
+
+                </table>
+
             </div>
 
         </div>
 
     </div>
 
-    <!-- CARDS -->
-    <div class="row g-3">
+    <!-- DIREITA -->
 
-        <div class="col-md-3">
-            <div class="card-box blue">
-                <h3>20</h3>
-                <div>Usuários</div>
-                <div class="small-text">↑ 12% desde ontem</div>
+    <div class="right-column">
+
+        <!-- DONUT -->
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <div class="panel-title">
+
+                        Distribuição de Risco
+
+                    </div>
+
+                    <div class="panel-subtitle">
+
+                        Hoje
+
+                    </div>
+
+                </div>
+
             </div>
+
+            <div class="chart-small">
+
+                <canvas id="riscoChart"></canvas>
+
+            </div>
+
         </div>
 
-        <div class="col-md-3">
-            <div class="card-box orange">
-                <h3>4</h3>
-                <div>Pedidos</div>
-                <div class="small-text">↑ 5% desde ontem</div>
-            </div>
-        </div>
+        <!-- ALERTAS -->
 
-        <div class="col-md-3">
-            <div class="card-box purple">
-                <h3>120</h3>
-                <div>Logs</div>
-                <div class="small-text">↑ 18% desde ontem</div>
-            </div>
-        </div>
+        <div class="panel">
 
-        <div class="col-md-3">
-            <div class="card-box green">
-                <h3>63.65</h3>
-                <div>Score Médio</div>
-                <div class="small-text">↑ 7.3% desde ontem</div>
+            <div class="panel-header">
+
+                <div>
+
+                    <div class="panel-title">
+
+                        Alertas Ativos
+
+                    </div>
+
+                    <div class="panel-subtitle">
+
+                        Tempo real
+
+                    </div>
+
+                </div>
+
             </div>
+
+            <div class="alert-list">
+
+                <!-- Continuação Parte 2 -->
+
+            </div>
+
         </div>
 
     </div>
 
-    <br>
+</div>
+<!-- =======================================
+PEDIDOS RECENTES
+======================================= -->
 
-    <!-- PANELS -->
-    <div class="row g-3">
+<tbody>
 
-        <div class="col-md-4">
-            <div class="panel">
-                <h6>Visão Geral de Risco</h6>
-                <hr>
-                <p>Gráfico aqui</p>
-            </div>
-        </div>
+{% if pedidos_recentes %}
 
-        <div class="col-md-4">
-            <div class="panel">
-                <h6>Score Médio</h6>
-                <hr>
-                <p>Gráfico aqui</p>
-            </div>
-        </div>
+{% for pedido in pedidos_recentes %}
 
-        <div class="col-md-4">
-            <div class="panel">
-                <h6>Alertas Ativos</h6>
-                <hr>
+<tr>
 
-                {% for alerta in alertas %}
-                <div style="margin-bottom:10px;">
-                    <b>{{ alerta.titulo }}</b><br>
-                    <small>{{ alerta.mensagem }}</small>
+    <td>#{{ pedido.id }}</td>
+
+    <td>
+
+        <strong>{{ pedido.nome }}</strong>
+
+    </td>
+
+    <td>
+
+        R$ {{ "%.2f"|format(pedido.valor) }}
+
+    </td>
+
+    <td>
+
+        {% if pedido.status == "Aprovado" %}
+
+            <span class="status status-success">
+                Aprovado
+            </span>
+
+        {% elif pedido.status == "Análise" %}
+
+            <span class="status status-warning">
+                Em Análise
+            </span>
+
+        {% elif pedido.status == "Bloqueado" %}
+
+            <span class="status status-danger">
+                Bloqueado
+            </span>
+
+        {% else %}
+
+            <span class="status status-info">
+                {{ pedido.status }}
+            </span>
+
+        {% endif %}
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+{% else %}
+
+<tr>
+
+<td colspan="4" class="text-center text-secondary">
+
+Nenhum pedido encontrado.
+
+</td>
+
+</tr>
+
+{% endif %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- =======================================
+COLUNA DIREITA
+======================================= -->
+
+<div class="right-column">
+
+<!-- RISCO -->
+
+<div class="panel">
+
+<div class="panel-header">
+
+<div>
+
+<div class="panel-title">
+
+Distribuição de Risco
+
+</div>
+
+<div class="panel-subtitle">
+
+Últimas 24 horas
+
+</div>
+
+</div>
+
+</div>
+
+<div class="chart-small">
+
+<canvas id="riscoChart"></canvas>
+
+</div>
+
+</div>
+
+<!-- ALERTAS -->
+
+<div class="panel">
+
+<div class="panel-header">
+
+<div>
+
+<div class="panel-title">
+
+Alertas Ativos
+
+</div>
+
+<div class="panel-subtitle">
+
+Monitoramento em tempo real
+
+</div>
+
+</div>
+
+</div>
+
+<div class="alert-list">
+
+{% if alertas %}
+
+{% for alerta in alertas %}
+
+<div class="alert-card">
+
+<div class="alert-icon">
+
+<i class="bi bi-exclamation-triangle-fill"></i>
+
+</div>
+
+<div class="alert-info">
+
+<div class="alert-title">
+
+{{ alerta.titulo }}
+
+</div>
+
+<div class="alert-description">
+
+{{ alerta.mensagem }}
+
+</div>
+
+</div>
+
+<div class="alert-time">
+
+Agora
+
+</div>
+
+</div>
+
+{% endfor %}
+
+{% else %}
+
+<div class="text-center text-secondary">
+
+Nenhum alerta ativo.
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+<!-- DISPOSITIVOS -->
+
+<div class="panel">
+
+<div class="panel-header">
+
+<div>
+
+<div class="panel-title">
+
+Dispositivos
+
+</div>
+
+<div class="panel-subtitle">
+
+Acessos recentes
+
+</div>
+
+</div>
+
+</div>
+
+<div class="device-list">
+
+<div class="device">
+
+<div class="device-left">
+
+<div class="device-icon">
+
+<i class="bi bi-phone-fill"></i>
+
+</div>
+
+<div>
+
+<div class="device-name">
+
+Android
+
+</div>
+
+<div class="device-percent">
+
+46%
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="device">
+
+<div class="device-left">
+
+<div class="device-icon">
+
+<i class="bi bi-laptop-fill"></i>
+
+</div>
+
+<div>
+
+<div class="device-name">
+
+Windows
+
+</div>
+
+<div class="device-percent">
+
+31%
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="device">
+
+<div class="device-left">
+
+<div class="device-icon">
+
+<i class="bi bi-apple"></i>
+
+</div>
+
+<div>
+
+<div class="device-name">
+
+iPhone
+
+</div>
+
+<div class="device-percent">
+
+23%
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+<!-- =======================================
+LINHA 2
+======================================= -->
+
+<div class="row mt-4">
+
+    <!-- ÚLTIMOS LOGS -->
+
+    <div class="col-lg-8">
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <div class="panel-title">
+                        Últimos Logs
+                    </div>
+
+                    <div class="panel-subtitle">
+                        Eventos registrados pelo sistema
+                    </div>
+
                 </div>
-                {% endfor %}
 
             </div>
+
+            <div class="table-responsive">
+
+                <table class="table-modern">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Horário</th>
+                            <th>Usuário</th>
+                            <th>Ação</th>
+                            <th>IP</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    {% if ultimos_logs %}
+
+                        {% for log in ultimos_logs %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ log.data }}
+
+                            </td>
+
+                            <td>
+
+                                {{ log.usuario }}
+
+                            </td>
+
+                            <td>
+
+                                {{ log.acao }}
+
+                            </td>
+
+                            <td>
+
+                                {{ log.ip }}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <tr>
+
+                            <td colspan="4" class="text-center text-secondary">
+
+                                Nenhum log encontrado.
+
+                            </td>
+
+                        </tr>
+
+                    {% endif %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TIMELINE -->
+
+    <div class="col-lg-4">
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <div class="panel-title">
+
+                        Timeline
+
+                    </div>
+
+                    <div class="panel-subtitle">
+
+                        Eventos recentes
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="timeline">
+
+                <div class="timeline-item">
+
+                    <div class="timeline-dot"></div>
+
+                    <div class="timeline-title">
+
+                        Pedido aprovado
+
+                    </div>
+
+                    <div class="timeline-text">
+
+                        Score acima do limite.
+
+                    </div>
+
+                    <div class="timeline-time">
+
+                        há 2 minutos
+
+                    </div>
+
+                </div>
+
+                <div class="timeline-item">
+
+                    <div class="timeline-dot"></div>
+
+                    <div class="timeline-title">
+
+                        Novo login
+
+                    </div>
+
+                    <div class="timeline-text">
+
+                        IP confiável detectado.
+
+                    </div>
+
+                    <div class="timeline-time">
+
+                        há 8 minutos
+
+                    </div>
+
+                </div>
+
+                <div class="timeline-item">
+
+                    <div class="timeline-dot"></div>
+
+                    <div class="timeline-title">
+
+                        Alerta gerado
+
+                    </div>
+
+                    <div class="timeline-text">
+
+                        Score inferior a 30.
+
+                    </div>
+
+                    <div class="timeline-time">
+
+                        há 15 minutos
+
+                    </div>
+
+                </div>
+
+                <div class="timeline-item">
+
+                    <div class="timeline-dot"></div>
+
+                    <div class="timeline-title">
+
+                        Usuário cadastrado
+
+                    </div>
+
+                    <div class="timeline-text">
+
+                        Novo dispositivo registrado.
+
+                    </div>
+
+                    <div class="timeline-time">
+
+                        há 30 minutos
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
     </div>
 
 </div>
 
-</body>
-</html>
+<!-- =======================================
+LINHA 3
+======================================= -->
+
+<div class="row mt-4">
+
+    <!-- USUÁRIOS ONLINE -->
+
+    <div class="col-lg-4">
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div class="panel-title">
+
+                    Usuários Online
+
+                </div>
+
+            </div>
+
+            <div class="online-user">
+
+                <div class="online-left">
+
+                    <img src="/static/user.png" class="online-avatar">
+
+                    <div>
+
+                        <div class="online-name">
+
+                            Administrador
+
+                        </div>
+
+                        <div class="online-role">
+
+                            Sistema
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="online-status"></div>
+
+            </div>
+
+            <div class="online-user">
+
+                <div class="online-left">
+
+                    <img src="/static/user.png" class="online-avatar">
+
+                    <div>
+
+                        <div class="online-name">
+
+                            Analista
+
+                        </div>
+
+                        <div class="online-role">
+
+                            Fraudes
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="online-status"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- NAVEGADORES -->
+
+    <div class="col-lg-4">
+
+        <div class="panel">
+
+            <div class="panel-title">
+
+                Navegadores
+
+            </div>
+
+            <div class="progress-box">
+
+                <div class="progress-item">
+
+                    <div class="progress-title">
+
+                        Chrome
+
+                        <span>65%</span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-bar" style="width:65%"></div>
+
+                    </div>
+
+                </div>
+
+                <div class="progress-item">
+
+                    <div class="progress-title">
+
+                        Edge
+
+                        <span>20%</span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-bar" style="width:20%"></div>
+
+                    </div>
+
+                </div>
+
+                <div class="progress-item">
+
+                    <div class="progress-title">
+
+                        Firefox
+
+                        <span>15%</span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div class="progress-bar" style="width:15%"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SISTEMAS -->
+
+    <div class="col-lg-4">
+
+        <div class="panel">
+
+            <div class="panel-title">
+
+                Sistemas Operacionais
+
+            </div>
+
+            <div class="mini-cards">
+
+                <div class="mini-card">
+
+                    <h2>58%</h2>
+
+                    <span>Windows</span>
+
+                </div>
+
+                <div class="mini-card">
+
+                    <h2>24%</h2>
+
+                    <span>Android</span>
+
+                </div>
+
+                <div class="mini-card">
+
+                    <h2>12%</h2>
+
+                    <span>iOS</span>
+
+                </div>
+
+                <div class="mini-card">
+
+                    <h2>6%</h2>
+
+                    <span>Linux</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- =======================================
+LINHA 4
+======================================= -->
+
+<div class="row mt-4">
+
+    <!-- ESTATÍSTICAS -->
+
+    <div class="col-lg-4">
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <div class="panel-title">
+
+                        Estatísticas Gerais
+
+                    </div>
+
+                    <div class="panel-subtitle">
+
+                        Últimas 24 horas
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="stats-row">
+
+                <div class="stat-card">
+
+                    <div class="stat-left">
+
+                        <div class="stat-title">
+
+                            Aprovação
+
+                        </div>
+
+                        <div class="stat-number">
+
+                            {{ pedidos_aprovados }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-check-circle-fill"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-left">
+
+                        <div class="stat-title">
+
+                            Em Análise
+
+                        </div>
+
+                        <div class="stat-number">
+
+                            {{ pedidos_analise }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-search"></i>
+
+                    </div>
+
+                </div>
+
+                <div class="stat-card">
+
+                    <div class="stat-left">
+
+                        <div class="stat-title">
+
+                            Bloqueados
+
+                        </div>
+
+                        <div class="stat-number">
+
+                            {{ pedidos_bloqueados }}
+
+                        </div>
+
+                    </div>
+
+                    <div class="stat-icon">
+
+                        <i class="bi bi-shield-fill-x"></i>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PAÍSES -->
+
+    <div class="col-lg-4">
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div class="panel-title">
+
+                    Origem dos Acessos
+
+                </div>
+
+            </div>
+
+            <table class="table-modern">
+
+                <tbody>
+
+                    <tr>
+
+                        <td>🇧🇷 Brasil</td>
+
+                        <td>82%</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>🇺🇸 Estados Unidos</td>
+
+                        <td>8%</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>🇦🇷 Argentina</td>
+
+                        <td>4%</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>🌎 Outros</td>
+
+                        <td>6%</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- TOP RISCO -->
+
+    <div class="col-lg-4">
+
+        <div class="panel">
+
+            <div class="panel-header">
+
+                <div class="panel-title">
+
+                    Maiores Scores de Risco
+
+                </div>
+
+            </div>
+
+            <table class="table-modern">
+
+                <tbody>
+
+                    <tr>
+
+                        <td>João Silva</td>
+
+                        <td>
+
+                            <span class="status status-danger">
+
+                                97
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Maria Souza</td>
+
+                        <td>
+
+                            <span class="status status-warning">
+
+                                82
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Carlos Lima</td>
+
+                        <td>
+
+                            <span class="status status-warning">
+
+                                75
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Ana Costa</td>
+
+                        <td>
+
+                            <span class="status status-success">
+
+                                22
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =======================================
+RODAPÉ
+======================================= -->
+
+<div class="footer mt-4">
+
+    <div>
+
+        <strong>Sistema Antifraude</strong>
+
+        © {{ ano if ano else 2026 }}
+
+    </div>
+
+    <div>
+
+        Versão 2.0
+
+    </div>
+
+    <div>
+
+        Flask • Bootstrap • Chart.js
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+{% endblock %}
