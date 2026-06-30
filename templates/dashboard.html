@@ -2,240 +2,129 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Antifraude Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Antifraude</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
-
-/* =========================
-   ROOT SYSTEM (PIXEL GRID)
-========================= */
-:root{
---bg:#f5f7fb;
---card:#ffffff;
---text:#111827;
---muted:#6b7280;
---radius:14px;
---shadow:0 10px 25px rgba(0,0,0,0.06);
---shadow-soft:0 6px 16px rgba(0,0,0,0.05);
-}
-
-/* =========================
-   BASE
-========================= */
 body{
-margin:0;
-font-family:Inter, Arial, sans-serif;
-background:var(--bg);
-color:var(--text);
+    margin:0;
+    font-family: "Inter", sans-serif;
+    background:#f4f6fb;
 }
 
-/* =========================
-   SIDEBAR (EXATO DO DESIGN)
-========================= */
+/* SIDEBAR */
 .sidebar{
-position:fixed;
-left:0;
-top:0;
-width:260px;
-height:100vh;
-background:linear-gradient(180deg,#e11d48,#991b1b);
-padding:20px;
-color:#fff;
+    width:260px;
+    height:100vh;
+    position:fixed;
+    left:0;
+    top:0;
+    background: linear-gradient(180deg,#e11d2e,#b3121f);
+    color:#fff;
+    padding:20px;
 }
 
-.sidebar .logo{
-width:100%;
-background:#fff;
-padding:10px;
-border-radius:12px;
-margin-bottom:25px;
-box-shadow:var(--shadow-soft);
+.logo{
+    font-size:26px;
+    font-weight:800;
+    margin-bottom:30px;
 }
 
-.sidebar a{
-display:flex;
-align-items:center;
-gap:10px;
-color:#fff;
-text-decoration:none;
-padding:10px 12px;
-border-radius:10px;
-font-size:14px;
-margin-bottom:4px;
-transition:.2s;
-opacity:.9;
+.nav-item{
+    padding:12px 15px;
+    border-radius:10px;
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:pointer;
+    opacity:.9;
 }
 
-.sidebar a:hover,
-.sidebar a.active{
-background:rgba(255,255,255,0.15);
-opacity:1;
+.nav-item:hover{
+    background:rgba(255,255,255,0.15);
 }
 
-/* =========================
-   CONTENT
-========================= */
-.content{
-margin-left:270px;
-padding:24px;
+/* MAIN */
+.main{
+    margin-left:260px;
+    padding:20px 25px;
 }
 
-/* =========================
-   TOPBAR (PIXEL CLEAN)
-========================= */
+/* TOPBAR */
 .topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#fff;
-padding:14px 18px;
-border-radius:16px;
-box-shadow:var(--shadow-soft);
-margin-bottom:18px;
-}
-
-.topbar h3{
-margin:0;
-font-size:18px;
-font-weight:600;
-}
-
-.topbar small{
-color:var(--muted);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
 }
 
 .search{
-width:340px;
-padding:10px 14px;
-border-radius:12px;
-border:1px solid #e5e7eb;
-outline:none;
+    width:420px;
+    background:#fff;
+    border-radius:12px;
+    padding:10px 15px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
 }
 
-/* =========================
-   KPI GRID (EXATO DO PRINT)
-========================= */
-.kpis{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:14px;
-margin-bottom:18px;
+.search input{
+    border:none;
+    outline:none;
+    width:100%;
 }
 
-.kpi{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:16px;
-border-radius:18px;
-color:#fff;
-box-shadow:var(--shadow);
-min-height:88px;
+/* CARDS */
+.card-kpi{
+    border-radius:14px;
+    color:#fff;
+    padding:18px;
+    height:95px;
 }
 
-.kpi h4{
-margin:0;
-font-size:20px;
-font-weight:700;
+.blue{background:linear-gradient(135deg,#3b82f6,#2563eb);}
+.orange{background:linear-gradient(135deg,#fb923c,#f97316);}
+.purple{background:linear-gradient(135deg,#a855f7,#7c3aed);}
+.green{background:linear-gradient(135deg,#22c55e,#16a34a);}
+
+.card-title-small{
+    font-size:13px;
+    opacity:.9;
 }
 
-.kpi p{
-margin:0;
-font-size:12px;
-opacity:.9;
+.card-value{
+    font-size:22px;
+    font-weight:700;
 }
 
-.kpi i{
-font-size:22px;
-opacity:.9;
+/* BOXES */
+.box{
+    background:#fff;
+    border-radius:14px;
+    padding:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
 }
 
-/* cores exatas estilo dashboard */
-.blue{background:linear-gradient(135deg,#2563eb,#60a5fa);}
-.orange{background:linear-gradient(135deg,#f97316,#fb923c);}
-.purple{background:linear-gradient(135deg,#7c3aed,#a78bfa);}
-.green{background:linear-gradient(135deg,#16a34a,#4ade80);}
-
-/* =========================
-   GRID PRINCIPAL (MATCH IMAGE)
-========================= */
-.grid{
-display:grid;
-grid-template-columns:2fr 1fr;
-gap:14px;
+.section-title{
+    font-weight:600;
+    margin-bottom:10px;
+    font-size:15px;
 }
 
-/* CARD BASE */
-.card-box{
-background:var(--card);
-border-radius:16px;
-padding:16px;
-box-shadow:var(--shadow-soft);
-}
-
-/* TITULOS */
-.card-box h5{
-font-size:14px;
-font-weight:600;
-margin-bottom:12px;
-}
-
-/* =========================
-   TABELA (FINTECH STYLE)
-========================= */
+/* TABLE */
 table{
-width:100%;
-font-size:13px;
-border-collapse:separate;
-border-spacing:0 8px;
+    width:100%;
+    font-size:13px;
 }
 
-th{
-text-align:left;
-color:var(--muted);
-font-weight:600;
-font-size:12px;
-}
-
-td{
-background:#f9fafb;
-padding:10px;
-border-radius:10px;
-}
-
-/* BADGES */
 .badge-low{background:#22c55e;}
-.badge-mid{background:#f59e0b;}
+.badge-med{background:#f59e0b;}
 .badge-high{background:#ef4444;}
-
-/* =========================
-   ALERT STYLE
-========================= */
-.alert-item{
-padding:10px;
-border-radius:12px;
-background:#f9fafb;
-margin-bottom:8px;
-font-size:13px;
-}
-
-/* =========================
-   MICRO INTERACTIONS
-========================= */
-.card-box:hover{
-transform:translateY(-2px);
-transition:.2s;
-}
-
-.kpi:hover{
-transform:translateY(-2px);
-transition:.2s;
-}
-
 </style>
 </head>
 
@@ -243,123 +132,120 @@ transition:.2s;
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-<img class="logo" src="https://i.ibb.co/1tyzJs4j/logo-vermelho.png">
+    <div class="logo">Eirilar</div>
 
-<a class="active"><i class="bi bi-grid"></i> Dashboard</a>
-<a><i class="bi bi-people"></i> Usuários</a>
-<a><i class="bi bi-bag"></i> Pedidos</a>
-<a><i class="bi bi-shield-lock"></i> Risco</a>
-<a><i class="bi bi-file-text"></i> Logs</a>
+    <div class="nav-item"><i class="bi bi-speedometer2"></i> Dashboard</div>
+    <div class="nav-item"><i class="bi bi-people"></i> Usuários</div>
+    <div class="nav-item"><i class="bi bi-bag"></i> Pedidos</div>
+    <div class="nav-item"><i class="bi bi-shield"></i> Análise de Risco</div>
+    <div class="nav-item"><i class="bi bi-bell"></i> Alertas</div>
+    <div class="nav-item"><i class="bi bi-list"></i> Logs</div>
+    <div class="nav-item"><i class="bi bi-gear"></i> Configurações</div>
 </div>
 
-<!-- CONTENT -->
-<div class="content">
+<!-- MAIN -->
+<div class="main">
 
-<!-- TOPBAR -->
-<div class="topbar">
-<div>
-<h3>Dashboard Antifraude</h3>
-<small>Bem-vindo, Admin</small>
-</div>
+    <!-- TOP -->
+    <div class="topbar">
+        <h4>Dashboard Antifraude</h4>
 
-<input class="search" placeholder="Pesquisar...">
+        <div class="search">
+            <i class="bi bi-search"></i>
+            <input placeholder="Pesquisar...">
+        </div>
 
-<div>
-<i class="bi bi-bell"></i>
-<span style="margin-left:10px;">Admin</span>
-</div>
-</div>
+        <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-bell fs-5"></i>
+            <div class="d-flex align-items-center gap-2">
+                <div style="width:35px;height:35px;border-radius:50%;background:#ddd;"></div>
+                <div>
+                    <div style="font-size:13px;font-weight:600;">Admin</div>
+                    <div style="font-size:11px;color:#777;">Administrador</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- KPI -->
-<div class="kpis">
+    <!-- KPI -->
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card-kpi blue">
+                <div class="card-title-small">Usuários</div>
+                <div class="card-value">20</div>
+            </div>
+        </div>
 
-<div class="kpi blue">
-<div>
-<h4>{{ total_usuarios }}</h4>
-<p>Usuários</p>
-</div>
-<i class="bi bi-people-fill"></i>
-</div>
+        <div class="col-md-3">
+            <div class="card-kpi orange">
+                <div class="card-title-small">Pedidos</div>
+                <div class="card-value">4</div>
+            </div>
+        </div>
 
-<div class="kpi orange">
-<div>
-<h4>{{ total_pedidos }}</h4>
-<p>Pedidos</p>
-</div>
-<i class="bi bi-bag-fill"></i>
-</div>
+        <div class="col-md-3">
+            <div class="card-kpi purple">
+                <div class="card-title-small">Logs</div>
+                <div class="card-value">120</div>
+            </div>
+        </div>
 
-<div class="kpi purple">
-<div>
-<h4>{{ total_logs }}</h4>
-<p>Logs</p>
-</div>
-<i class="bi bi-file-text"></i>
-</div>
+        <div class="col-md-3">
+            <div class="card-kpi green">
+                <div class="card-title-small">Score Médio</div>
+                <div class="card-value">63.65</div>
+            </div>
+        </div>
+    </div>
 
-<div class="kpi green">
-<div>
-<h4>{{ media_risco }}</h4>
-<p>Score Médio</p>
-</div>
-<i class="bi bi-shield-check"></i>
-</div>
+    <!-- GRID -->
+    <div class="row g-3 mt-1">
 
-</div>
+        <div class="col-md-4">
+            <div class="box">
+                <div class="section-title">Visão Geral de Risco</div>
+                <div style="height:180px;background:#f1f5f9;border-radius:10px;"></div>
+            </div>
+        </div>
 
-<!-- GRID -->
-<div class="grid">
+        <div class="col-md-4">
+            <div class="box">
+                <div class="section-title">Score Médio</div>
+                <div style="height:180px;background:#f1f5f9;border-radius:10px;"></div>
+            </div>
+        </div>
 
-<!-- LEFT -->
-<div class="card-box">
-<h5>Últimos Pedidos</h5>
+        <div class="col-md-4">
+            <div class="box">
+                <div class="section-title">Pedidos por Risco</div>
+                <div style="height:180px;background:#f1f5f9;border-radius:10px;"></div>
+            </div>
+        </div>
 
-<table>
-<thead>
-<tr>
-<th>Pedido</th>
-<th>Usuário</th>
-<th>Score</th>
-<th>Status</th>
-</tr>
-</thead>
+    </div>
 
-<tbody>
-{% for p in pedidos %}
-<tr>
-<td>#{{ p.id }}</td>
-<td>{{ p.usuario }}</td>
-<td>{{ p.score }}</td>
-<td>
-{% if p.score < 30 %}
-<span class="badge badge-low">Baixo</span>
-{% elif p.score < 70 %}
-<span class="badge badge-mid">Médio</span>
-{% else %}
-<span class="badge badge-high">Alto</span>
-{% endif %}
-</td>
-</tr>
-{% endfor %}
-</tbody>
+    <!-- TABLES -->
+    <div class="row g-3 mt-1">
 
-</table>
-</div>
+        <div class="col-md-6">
+            <div class="box">
+                <div class="section-title">Últimos Pedidos</div>
+                <table>
+                    <tr><th>Pedido</th><th>Usuário</th><th>Status</th></tr>
+                    <tr><td>#1024</td><td>Thiago</td><td><span class="badge bg-danger">Alto</span></td></tr>
+                    <tr><td>#1023</td><td>Larissa</td><td><span class="badge bg-warning text-dark">Médio</span></td></tr>
+                </table>
+            </div>
+        </div>
 
-<!-- RIGHT -->
-<div class="card-box">
-<h5>Alertas Ativos</h5>
+        <div class="col-md-6">
+            <div class="box">
+                <div class="section-title">Dispositivos Suspeitos</div>
+                <div style="height:220px;background:#f1f5f9;border-radius:10px;"></div>
+            </div>
+        </div>
 
-{% for a in alertas %}
-<div class="alert-item">
-<b>{{ a.titulo }}</b><br>
-<span style="color:#6b7280;font-size:12px">{{ a.desc }}</span>
-</div>
-{% endfor %}
-
-</div>
-
-</div>
+    </div>
 
 </div>
 
